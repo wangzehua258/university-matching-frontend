@@ -16,12 +16,6 @@ export default function HomePage() {
             </div>
             <div className="flex space-x-4">
               <Link
-                href="/login"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                登录
-              </Link>
-              <Link
                 href="/universities"
                 className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
               >

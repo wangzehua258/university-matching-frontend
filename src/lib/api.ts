@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getAnonymousUserId } from './useAnonymousUser';
 
 // API基础配置
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
@@ -11,47 +12,14 @@ const api = axios.create({
   },
 });
 
-// 请求拦截器 - 添加token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
 // 响应拦截器 - 处理错误
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
+    console.error('API Error:', error);
     return Promise.reject(error);
   }
 );
-
-// 用户相关API
-export const userAPI = {
-  // 用户登录
-  login: async (phone: string) => {
-    const response = await api.post('/users/login', { phone });
-    return response.data;
-  },
-
-  // 用户注册
-  register: async (phone: string, role: 'parent' | 'student') => {
-    const response = await api.post('/users/register', { phone, role });
-    return response.data;
-  },
-
-  // 获取当前用户信息
-  getCurrentUser: async () => {
-    const response = await api.get('/users/me');
-    return response.data;
-  },
-};
 
 // 大学相关API
 export const universityAPI = {
@@ -94,7 +62,11 @@ export const universityAPI = {
 export const evaluationAPI = {
   // 创建家长评估
   createParentEvaluation: async (data: Record<string, unknown>) => {
-    const response = await api.post('/evals/parent', data);
+    const userId = getAnonymousUserId();
+    const response = await api.post('/evals/parent', {
+      ...data,
+      user_id: userId
+    });
     return response.data;
   },
 
@@ -104,15 +76,31 @@ export const evaluationAPI = {
     return response.data;
   },
 
+  // 根据用户ID获取家长评估结果
+  getParentEvaluationByUserId: async (userId: string) => {
+    const response = await api.get(`/evals/parent/user/${userId}`);
+    return response.data;
+  },
+
   // 创建学生人格测评
   createStudentTest: async (data: Record<string, unknown>) => {
-    const response = await api.post('/evals/student', data);
+    const userId = getAnonymousUserId();
+    const response = await api.post('/evals/student', {
+      ...data,
+      user_id: userId
+    });
     return response.data;
   },
 
   // 获取学生人格测评结果
   getStudentTest: async (id: string) => {
     const response = await api.get(`/evals/student/${id}`);
+    return response.data;
+  },
+
+  // 根据用户ID获取学生测评结果
+  getStudentTestByUserId: async (userId: string) => {
+    const response = await api.get(`/evals/student/user/${userId}`);
     return response.data;
   },
 };
