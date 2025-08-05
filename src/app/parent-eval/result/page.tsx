@@ -1,71 +1,94 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { GraduationCap, Users, Brain, BookOpen, Star, MapPin, DollarSign, Users as UsersIcon } from 'lucide-react';
-import { evaluationAPI, universityAPI } from '@/lib/api';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { evaluationAPI } from '@/lib/api';
+import { getAnonymousUserId } from '@/lib/useAnonymousUser';
+import { GraduationCap, MapPin, DollarSign, Users, Calendar, Globe, Award } from 'lucide-react';
 
-interface University {
+interface School {
   id: string;
   name: string;
   country: string;
   rank: number;
   tuition: number;
   intl_rate: number;
+  type: string;
+  schoolSize: string;
+  strengths: string[];
+  tags: string[];
+  has_internship_program: boolean;
+  has_research_program: boolean;
   gpt_summary: string;
+  logoUrl: string;
+  acceptanceRate: number;
+  satRange: string;
+  actRange: string;
+  gpaRange: string;
+  applicationDeadline: string;
+  website: string;
+}
+
+interface StudentProfile {
+  type: string;
+  description: string;
 }
 
 interface EvaluationResult {
   id: string;
-  studentProfile: {
-    type: string;
-    description: string;
-  };
-  recommendedSchools: University[];
-  edSuggestion: University;
-  eaSuggestions: University[];
-  rdSuggestions: University[];
+  user_id: string;
+  studentProfile: StudentProfile;
+  recommendedSchools: School[];
+  edSuggestion: School | null;
+  eaSuggestions: School[];
+  rdSuggestions: School[];
   strategy: string;
   gptSummary: string;
+  created_at: string;
 }
 
 const ParentEvalResult = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const evaluationId = searchParams.get('id');
-    if (evaluationId) {
-      loadEvaluationResult(evaluationId);
-    } else {
-      // 如果没有ID，说明是直接访问，显示错误
-      setError('未找到评估结果');
-      setLoading(false);
-    }
-  }, [searchParams]);
+    const fetchResult = async () => {
+      try {
+        const evalId = searchParams.get('id');
+        const userId = getAnonymousUserId();
 
-  const loadEvaluationResult = async (evaluationId: string) => {
-    try {
-      setLoading(true);
-      const data = await evaluationAPI.getParentEvaluation(evaluationId);
-      setResult(data);
-    } catch (error) {
-      console.error('加载评估结果失败:', error);
-      setError('加载评估结果失败');
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (evalId) {
+          // 如果有评估ID，直接获取该评估结果
+          const data = await evaluationAPI.getParentEvaluation(evalId);
+          setResult(data);
+        } else {
+          // 否则获取用户最新的评估结果
+          const evaluations = await evaluationAPI.getParentEvaluationByUserId(userId);
+          if (evaluations && evaluations.length > 0) {
+            setResult(evaluations[0]);
+          } else {
+            setError('未找到评估结果');
+          }
+        }
+      } catch (err) {
+        console.error('获取评估结果失败:', err);
+        setError('获取评估结果失败');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResult();
+  }, [searchParams]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">正在加载您的个性化评估报告...</p>
+          <p className="text-gray-600">正在生成您的个性化择校报告...</p>
         </div>
       </div>
     );
@@ -75,25 +98,50 @@ const ParentEvalResult = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">{error || '无法加载评估结果'}</p>
+          <p className="text-red-600 mb-4">{error || '未找到评估结果'}</p>
           <button
-            onClick={() => router.push('/parent-eval/start')}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700"
+            onClick={() => window.history.back()}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            重新开始评估
+            返回
           </button>
         </div>
       </div>
     );
   }
 
+  const formatTuition = (tuition: number) => {
+    return `$${(tuition / 1000).toFixed(0)}k`;
+  };
+
+  const formatAcceptanceRate = (rate: number) => {
+    return `${(rate * 100).toFixed(1)}%`;
+  };
+
+  const getSchoolSizeText = (size: string) => {
+    const sizeMap: { [key: string]: string } = {
+      'small': '小型',
+      'medium': '中型',
+      'large': '大型'
+    };
+    return sizeMap[size] || size;
+  };
+
+  const getSchoolTypeText = (type: string) => {
+    const typeMap: { [key: string]: string } = {
+      'private': '私立',
+      'public': '公立'
+    };
+    return typeMap[type] || type;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">您的个性化择校评估报告</h1>
-          <p className="text-gray-600">基于您的输入，我们为您生成了以下建议</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">个性化择校报告</h1>
+          <p className="text-gray-600">基于您的评估结果生成的专属建议</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -102,127 +150,191 @@ const ParentEvalResult = () => {
             {/* 学生画像 */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <Users className="w-5 h-5 mr-2 text-blue-600" />
+                <GraduationCap className="w-5 h-5 mr-2 text-blue-600" />
                 学生画像
               </h2>
               <div className="space-y-3">
                 <div>
-                  <span className="text-sm font-medium text-gray-500">类型</span>
-                  <p className="text-lg font-semibold text-blue-600">{result.studentProfile.type}</p>
+                  <span className="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mb-2">
+                    {result.studentProfile.type}
+                  </span>
                 </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">描述</span>
-                  <p className="text-gray-700">{result.studentProfile.description}</p>
-                </div>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  {result.studentProfile.description}
+                </p>
               </div>
             </div>
 
             {/* 申请策略 */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <BookOpen className="w-5 h-5 mr-2 text-green-600" />
+                <Award className="w-5 h-5 mr-2 text-green-600" />
                 申请策略
               </h2>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-green-600 mb-2">ED (Early Decision)</h3>
-                  <p className="text-sm text-gray-700">{result.edSuggestion.name}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-orange-600 mb-2">EA (Early Action)</h3>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    {result.eaSuggestions.map((school, index) => (
-                      <li key={index}>• {school.name}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-blue-600 mb-2">RD (Regular Decision)</h3>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    {result.rdSuggestions.map((school, index) => (
-                      <li key={index}>• {school.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                {result.strategy}
+              </p>
             </div>
 
-            {/* AI分析 */}
+            {/* GPT总结 */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <Brain className="w-5 h-5 mr-2 text-purple-600" />
-                AI分析
+                <Globe className="w-5 h-5 mr-2 text-purple-600" />
+                专业建议
               </h2>
-              <p className="text-gray-700 leading-relaxed">{result.gptSummary}</p>
-            </div>
-
-            {/* CTA */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-6 text-white">
-              <h3 className="text-lg font-bold mb-2">希望获取完整申请规划？</h3>
-              <p className="text-blue-100 mb-4">我们的专业顾问将在24小时内为您提供详细方案</p>
-              <button className="w-full bg-white text-blue-600 px-4 py-2 rounded-md font-medium hover:bg-gray-50">
-                立即咨询
-              </button>
+              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
+                {result.gptSummary}
+              </p>
             </div>
           </div>
 
           {/* 右侧：推荐学校 */}
-          <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <Star className="w-6 h-6 mr-2 text-yellow-500" />
-              推荐学校 (Top {result.recommendedSchools.length})
-            </h2>
-            <div className="space-y-6">
-              {result.recommendedSchools.map((school, index) => (
-                <div key={school.id} className="bg-white rounded-lg shadow-lg p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {index + 1}. {school.name}
-                      </h3>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <span className="flex items-center">
-                          <Star className="w-4 h-4 mr-1 text-yellow-500" />
-                          排名 #{school.rank}
-                        </span>
-                        <span className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-1" />
-                          {school.country}
-                        </span>
-                        <span className="flex items-center">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          ${school.tuition.toLocaleString()}/年
-                        </span>
-                        <span className="flex items-center">
-                          <UsersIcon className="w-4 h-4 mr-1" />
-                          {Math.round(school.intl_rate * 100)}% 国际生
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">{school.gpt_summary}</p>
+          <div className="lg:col-span-2 space-y-6">
+            {/* ED建议 */}
+            {result.edSuggestion && (
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full mr-3">
+                    ED建议
+                  </span>
+                  早决定申请
+                </h2>
+                <SchoolCard school={result.edSuggestion} />
+              </div>
+            )}
+
+            {/* EA建议 */}
+            {result.eaSuggestions.length > 0 && (
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="bg-orange-100 text-orange-800 text-sm font-medium px-3 py-1 rounded-full mr-3">
+                    EA建议
+                  </span>
+                  早行动申请
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {result.eaSuggestions.map((school) => (
+                    <SchoolCard key={school.id} school={school} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
+
+            {/* RD建议 */}
+            {result.rdSuggestions.length > 0 && (
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mr-3">
+                    RD建议
+                  </span>
+                  常规申请
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {result.rdSuggestions.map((school) => (
+                    <SchoolCard key={school.id} school={school} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* 底部导航 */}
-        <div className="mt-8 flex justify-center space-x-4">
+        {/* 操作按钮 */}
+        <div className="mt-8 text-center">
           <button
-            onClick={() => router.push('/parent-eval/start')}
-            className="px-6 py-2 bg-gray-600 text-white rounded-md font-medium hover:bg-gray-700"
+            onClick={() => window.location.href = '/parent-eval/start'}
+            className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mr-4"
           >
             重新评估
           </button>
           <button
-            onClick={() => router.push('/universities')}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700"
+            onClick={() => window.location.href = '/'}
+            className="px-8 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
           >
-            浏览更多学校
+            返回首页
           </button>
         </div>
       </div>
+    </div>
+  );
+};
+
+// 学校卡片组件
+const SchoolCard = ({ school }: { school: School }) => {
+  return (
+    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1">
+          <h3 className="font-semibold text-gray-900 mb-1">{school.name}</h3>
+          <div className="flex items-center text-sm text-gray-600 mb-2">
+            <MapPin className="w-4 h-4 mr-1" />
+            <span>{school.country}</span>
+            <span className="mx-2">•</span>
+            <span>排名 #{school.rank}</span>
+          </div>
+        </div>
+        {school.logoUrl && (
+          <img src={school.logoUrl} alt={school.name} className="w-12 h-12 rounded" />
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+        <div className="flex items-center text-gray-600">
+          <DollarSign className="w-4 h-4 mr-1" />
+          <span>学费: {formatTuition(school.tuition)}/年</span>
+        </div>
+        <div className="flex items-center text-gray-600">
+          <Users className="w-4 h-4 mr-1" />
+          <span>录取率: {formatAcceptanceRate(school.acceptanceRate)}</span>
+        </div>
+        <div className="flex items-center text-gray-600">
+          <span>类型: {getSchoolTypeText(school.type)}</span>
+        </div>
+        <div className="flex items-center text-gray-600">
+          <span>规模: {getSchoolSizeText(school.schoolSize)}</span>
+        </div>
+      </div>
+
+      <div className="mb-3">
+        <div className="text-sm font-medium text-gray-700 mb-1">优势专业:</div>
+        <div className="flex flex-wrap gap-1">
+          {school.strengths.slice(0, 3).map((strength, index) => (
+            <span
+              key={index}
+              className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+            >
+              {strength}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {school.has_internship_program && (
+        <div className="mb-2">
+          <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+            ✓ 实习项目
+          </span>
+        </div>
+      )}
+
+      {school.has_research_program && (
+        <div className="mb-2">
+          <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">
+            ✓ 研究项目
+          </span>
+        </div>
+      )}
+
+      {school.website && (
+        <a
+          href={school.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 text-sm hover:underline"
+        >
+          访问官网 →
+        </a>
+      )}
     </div>
   );
 };
