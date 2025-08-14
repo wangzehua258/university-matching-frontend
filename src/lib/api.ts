@@ -72,6 +72,12 @@ export const universityAPI = {
     return response.data;
   },
 
+  // 获取大学列表（支持筛选）
+  getUniversities: async (params?: Record<string, string | number>) => {
+    const response = await api.get('/universities', { params });
+    return response.data;
+  },
+
   // 根据ID获取大学详情
   getUniversityById: async (id: string) => {
     const response = await api.get(`/universities/${id}`);
@@ -87,6 +93,18 @@ export const universityAPI = {
   // 根据条件筛选大学
   filterUniversities: async (filters: Record<string, unknown>) => {
     const response = await api.get('/universities/filter', { params: filters });
+    return response.data;
+  },
+
+  // 获取所有国家列表
+  getCountries: async () => {
+    const response = await api.get('/universities/countries/list');
+    return response.data;
+  },
+
+  // 获取所有优势专业列表
+  getStrengths: async () => {
+    const response = await api.get('/universities/strengths/list');
     return response.data;
   },
 };

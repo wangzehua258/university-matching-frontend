@@ -12,11 +12,15 @@ interface University {
   state: string;
   rank: number;
   tuition: number;
-  intl_rate: number;
+  intlRate: number;  // Changed from intl_rate to match backend
   type: string;
   strengths: string[];
-  gpt_summary: string;
-  logo_url?: string;
+  gptSummary: string;  // Changed from gpt_summary to match backend
+  logoUrl?: string;    // Changed from logo_url to match backend
+  location?: string;
+  personality_types?: string[];
+  schoolSize?: string;
+  description?: string;
 }
 
 export default function UniversitiesPage() {
@@ -215,7 +219,7 @@ export default function UniversitiesPage() {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Users className="h-4 w-4 mr-2" />
-                      <span>国际生比例: {(university.intl_rate * 100).toFixed(1)}%</span>
+                      <span>国际生比例: {(university.intlRate * 100).toFixed(1)}%</span>
                     </div>
                     <div className="text-sm text-gray-600">
                       <span className="font-medium">类型:</span> {university.type === 'private' ? '私立' : '公立'}
@@ -244,7 +248,7 @@ export default function UniversitiesPage() {
                   </div>
 
                   <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-                    {university.gpt_summary}
+                    {university.gptSummary}
                   </p>
 
                   <Link
