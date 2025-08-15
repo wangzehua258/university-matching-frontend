@@ -1,10 +1,35 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { evaluationAPI } from '@/lib/api';
-import { getAnonymousUserId } from '@/lib/useAnonymousUser';
-import { GraduationCap, MapPin, DollarSign, Users, Calendar, Globe, Award } from 'lucide-react';
+import { GraduationCap, Award, Globe, MapPin, DollarSign, Users, Star } from 'lucide-react';
+
+// Utility functions - moved outside component scope
+const formatTuition = (tuition: number) => {
+  return `$${(tuition / 1000).toFixed(0)}k`;
+};
+
+const formatAcceptanceRate = (rate: number) => {
+  return `${(rate * 100).toFixed(1)}%`;
+};
+
+const getSchoolSizeText = (size: string) => {
+  const sizeMap: { [key: string]: string } = {
+    'small': '小型',
+    'medium': '中型',
+    'large': '大型'
+  };
+  return sizeMap[size] || size;
+};
+
+const getSchoolTypeText = (type: string) => {
+  const typeMap: { [key: string]: string } = {
+    'private': '私立',
+    'public': '公立'
+  };
+  return typeMap[type] || type;
+};
 
 interface School {
   id: string;
@@ -12,14 +37,14 @@ interface School {
   country: string;
   rank: number;
   tuition: number;
-  intl_rate: number;
+  intlRate: number;
   type: string;
   schoolSize: string;
   strengths: string[];
   tags: string[];
   has_internship_program: boolean;
   has_research_program: boolean;
-  gpt_summary: string;
+  gptSummary: string;
   logoUrl: string;
   acceptanceRate: number;
   satRange: string;
@@ -29,15 +54,13 @@ interface School {
   website: string;
 }
 
-interface StudentProfile {
-  type: string;
-  description: string;
-}
-
 interface EvaluationResult {
   id: string;
   user_id: string;
-  studentProfile: StudentProfile;
+  studentProfile: {
+    type: string;
+    description: string;
+  };
   recommendedSchools: School[];
   edSuggestion: School | null;
   eaSuggestions: School[];
@@ -49,46 +72,35 @@ interface EvaluationResult {
 
 const ParentEvalResult = () => {
   const searchParams = useSearchParams();
+  const evalId = searchParams.get('id');
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        const evalId = searchParams.get('id');
-        const userId = getAnonymousUserId();
+    if (evalId) {
+      fetchResult();
+    }
+  }, [evalId]);
 
-        if (evalId) {
-          // 如果有评估ID，直接获取该评估结果
-          const data = await evaluationAPI.getParentEvaluation(evalId);
-          setResult(data);
-        } else {
-          // 否则获取用户最新的评估结果
-          const evaluations = await evaluationAPI.getParentEvaluationByUserId(userId);
-          if (evaluations && evaluations.length > 0) {
-            setResult(evaluations[0]);
-          } else {
-            setError('未找到评估结果');
-          }
-        }
-      } catch (err) {
-        console.error('获取评估结果失败:', err);
-        setError('获取评估结果失败');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchResult();
-  }, [searchParams]);
+  const fetchResult = async () => {
+    try {
+      const data = await evaluationAPI.getParentEvaluation(evalId!);
+      setResult(data);
+    } catch (error) {
+      console.error('获取评估结果失败:', error);
+      setError('获取评估结果失败');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">正在生成您的个性化择校报告...</p>
+          <p className="text-gray-600">加载中...</p>
         </div>
       </div>
     );
@@ -100,40 +112,15 @@ const ParentEvalResult = () => {
         <div className="text-center">
           <p className="text-red-600 mb-4">{error || '未找到评估结果'}</p>
           <button
-            onClick={() => window.history.back()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            onClick={() => window.location.href = '/'}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
-            返回
+            返回首页
           </button>
         </div>
       </div>
     );
   }
-
-  const formatTuition = (tuition: number) => {
-    return `$${(tuition / 1000).toFixed(0)}k`;
-  };
-
-  const formatAcceptanceRate = (rate: number) => {
-    return `${(rate * 100).toFixed(1)}%`;
-  };
-
-  const getSchoolSizeText = (size: string) => {
-    const sizeMap: { [key: string]: string } = {
-      'small': '小型',
-      'medium': '中型',
-      'large': '大型'
-    };
-    return sizeMap[size] || size;
-  };
-
-  const getSchoolTypeText = (type: string) => {
-    const typeMap: { [key: string]: string } = {
-      'private': '私立',
-      'public': '公立'
-    };
-    return typeMap[type] || type;
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
