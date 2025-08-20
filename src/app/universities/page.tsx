@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, MapPin, Star, DollarSign, Users } from 'lucide-react';
 import { universityAPI } from '@/lib/api';
@@ -33,12 +33,7 @@ export default function UniversitiesPage() {
   const [strengths, setStrengths] = useState<string[]>([]);
   const [selectedStrength, setSelectedStrength] = useState('');
 
-  useEffect(() => {
-    loadUniversities();
-    loadFilters();
-  }, []);
-
-  const loadUniversities = async () => {
+  const loadUniversities = useCallback(async () => {
     try {
       const params: Record<string, string | number> = {};
       if (searchTerm) params.search = searchTerm;
@@ -53,7 +48,12 @@ export default function UniversitiesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength]);
+
+  useEffect(() => {
+    loadUniversities();
+    loadFilters();
+  }, [loadUniversities]);
 
   const loadFilters = async () => {
     try {

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Brain, Star, MapPin, Users, Share2, Download } from 'lucide-react';
+import { Brain, Star, MapPin, Share2, Download } from 'lucide-react';
 import { evaluationAPI } from '@/lib/api';
 
 interface University {
@@ -23,7 +23,7 @@ interface PersonalityResult {
   gptAnalysis: string;
 }
 
-const StudentTestResult = () => {
+const StudentTestResultInner = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [result, setResult] = useState<PersonalityResult | null>(null);
@@ -203,6 +203,21 @@ const StudentTestResult = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const StudentTestResult = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">正在分析您的人格类型...</p>
+        </div>
+      </div>
+    }>
+      <StudentTestResultInner />
+    </Suspense>
   );
 };
 

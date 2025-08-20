@@ -122,4 +122,16 @@ export const userAPI = {
     const response = await api.get(`/users/anonymous/${userId}`);
     return response.data;
   },
+
+  // 获取当前用户信息
+  getCurrentUser: async () => {
+    const response = await api.get('/users/current');
+    return response.data;
+  },
+
+  // 用户登录
+  login: async (phone: string) => {
+    const response = await api.post('/users/login', { phone });
+    return response.data;
+  },
 }; 

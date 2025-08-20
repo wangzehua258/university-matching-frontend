@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { evaluationAPI } from '@/lib/api';
-import { GraduationCap, Award, Globe, MapPin, DollarSign, Users, Star } from 'lucide-react';
+import { GraduationCap, Award, Globe, MapPin, DollarSign, Users } from 'lucide-react';
 
 // Utility functions - moved outside component scope
 const formatTuition = (tuition: number) => {
@@ -70,20 +70,14 @@ interface EvaluationResult {
   created_at: string;
 }
 
-const ParentEvalResult = () => {
+const ParentEvalResultInner = () => {
   const searchParams = useSearchParams();
   const evalId = searchParams.get('id');
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (evalId) {
-      fetchResult();
-    }
-  }, [evalId]);
-
-  const fetchResult = async () => {
+  const fetchResult = useCallback(async () => {
     try {
       const data = await evaluationAPI.getParentEvaluation(evalId!);
       setResult(data);
@@ -93,7 +87,13 @@ const ParentEvalResult = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [evalId]);
+
+  useEffect(() => {
+    if (evalId) {
+      fetchResult();
+    }
+  }, [evalId, fetchResult]);
 
   if (loading) {
     return (
@@ -323,6 +323,21 @@ const SchoolCard = ({ school }: { school: School }) => {
         </a>
       )}
     </div>
+  );
+};
+
+const ParentEvalResult = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">加载中...</p>
+        </div>
+      </div>
+    }>
+      <ParentEvalResultInner />
+    </Suspense>
   );
 };
 

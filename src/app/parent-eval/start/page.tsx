@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, GraduationCap, Users, Brain, BookOpen } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { evaluationAPI } from '@/lib/api';
 import { getAnonymousUserId } from '@/lib/useAnonymousUser';
 
@@ -38,7 +38,7 @@ const ParentEvalStart = () => {
     internship_important: true,
   });
 
-  const handleInputChange = (field: keyof FormData, value: any) => {
+  const handleInputChange = (field: keyof FormData, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, GraduationCap, Users, Brain, ArrowRight, ExternalLink } from 'lucide-react';
+import { BookOpen, GraduationCap, Users, Brain, ArrowRight } from 'lucide-react';
 
 interface Article {
   id: string;

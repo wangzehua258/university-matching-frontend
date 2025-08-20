@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Brain, ChevronRight, Sparkles } from 'lucide-react';
+import { Brain, Sparkles } from 'lucide-react';
 import { evaluationAPI } from '@/lib/api';
 
 interface Question {
@@ -333,7 +333,7 @@ const StudentTestStart = () => {
 
           {/* Options */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {currentQ.options.map((option, index) => (
+            {currentQ.options.map((option) => (
               <button
                 key={option.value}
                 onClick={() => handleAnswer(option.value)}
