@@ -2,8 +2,18 @@ import axios from 'axios';
 import { getAnonymousUserId } from './useAnonymousUser';
 
 // 创建axios实例
+const getBaseURL = () => {
+  // Check if we're in production
+  if (process.env.NODE_ENV === 'production') {
+    // Use environment variable for production API URL
+    return process.env.NEXT_PUBLIC_API_URL || 'https://your-render-app.onrender.com/api';
+  }
+  // Use localhost for development
+  return 'http://localhost:8000/api';
+};
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
