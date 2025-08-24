@@ -12,14 +12,14 @@ interface University {
   state: string;
   rank: number;
   tuition: number;
-  intlRate: number;  // Changed from intl_rate to match backend
+  intl_rate: number;  // 匹配后端API字段名
   type: string;
   strengths: string[];
-  gptSummary: string;  // Changed from gpt_summary to match backend
-  logoUrl?: string;    // Changed from logo_url to match backend
+  gpt_summary: string;  // 匹配后端API字段名
+  logo_url?: string;    // 匹配后端API字段名
   location?: string;
   personality_types?: string[];
-  schoolSize?: string;
+  school_size?: string;
   description?: string;
 }
 
@@ -369,7 +369,7 @@ export default function UniversitiesPage() {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Users className="h-4 w-4 mr-2" />
-                      <span>国际生比例: {(university.intlRate * 100).toFixed(1)}%</span>
+                      <span>国际生比例: {(university.intl_rate * 100).toFixed(1)}%</span>
                     </div>
                     <div className="text-sm text-gray-600">
                       <span className="font-medium">类型:</span> {university.type === 'private' ? '私立' : '公立'}
@@ -380,25 +380,21 @@ export default function UniversitiesPage() {
                     <div className="text-sm text-gray-600 mb-2">
                       <span className="font-medium">优势专业:</span>
                     </div>
-                    <div className="flex flex-wrap gap-1">
-                      {university.strengths.slice(0, 3).map((strength, index) => (
+                    <div className="grid grid-cols-3 gap-1">
+                      {university.strengths.map((strength, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full text-center truncate"
+                          title={strength}
                         >
                           {strength}
                         </span>
                       ))}
-                      {university.strengths.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                          +{university.strengths.length - 3}
-                        </span>
-                      )}
                     </div>
                   </div>
 
                   <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-                    {university.gptSummary}
+                    {university.gpt_summary}
                   </p>
 
                   <Link
