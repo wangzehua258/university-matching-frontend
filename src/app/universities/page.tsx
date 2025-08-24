@@ -39,6 +39,11 @@ export default function UniversitiesPage() {
   const [totalUniversities, setTotalUniversities] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [hasPrev, setHasPrev] = useState(false);
+  
+  // 更多筛选选项
+  const [rankMin, setRankMin] = useState('');
+  const [rankMax, setRankMax] = useState('');
+  const [tuitionMax, setTuitionMax] = useState('');
 
   const loadUniversities = useCallback(async () => {
     try {
@@ -50,6 +55,9 @@ export default function UniversitiesPage() {
       if (selectedCountry) params.country = selectedCountry;
       if (selectedType) params.type = selectedType;
       if (selectedStrength) params.strength = selectedStrength;
+      if (rankMin) params.rank_min = parseInt(rankMin);
+      if (rankMax) params.rank_max = parseInt(rankMax);
+      if (tuitionMax) params.tuition_max = parseInt(tuitionMax);
 
       const data = await universityAPI.getUniversities(params);
       // 适配新的API响应格式：如果是分页对象，提取universities数组；如果是数组，直接使用
@@ -68,7 +76,7 @@ export default function UniversitiesPage() {
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage]);
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax]);
 
   useEffect(() => {
     loadUniversities();
@@ -98,6 +106,9 @@ export default function UniversitiesPage() {
     setSelectedCountry('');
     setSelectedType('');
     setSelectedStrength('');
+    setRankMin('');
+    setRankMax('');
+    setTuitionMax('');
     setCurrentPage(1); // 清除筛选时重置到第一页
     loadUniversities();
   };
@@ -118,6 +129,44 @@ export default function UniversitiesPage() {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  // 筛选器变化处理
+  const handleFilterChange = (filterType: string, value: string) => {
+    setCurrentPage(1); // 筛选变化时重置到第一页
+    
+    switch (filterType) {
+      case 'search':
+        setSearchTerm(value);
+        break;
+      case 'country':
+        setSelectedCountry(value);
+        break;
+      case 'type':
+        setSelectedType(value);
+        break;
+      case 'strength':
+        setSelectedStrength(value);
+        break;
+      case 'rankMin':
+        setRankMin(value);
+        break;
+      case 'rankMax':
+        setRankMax(value);
+        break;
+      case 'tuitionMax':
+        setTuitionMax(value);
+        break;
+    }
+  };
+
+  // 使用useEffect实现实时筛选
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadUniversities();
+    }, 300); // 300ms防抖
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -147,7 +196,7 @@ export default function UniversitiesPage() {
                   type="text"
                   placeholder="搜索大学名称或专业..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => handleFilterChange('search', e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 />
@@ -158,7 +207,7 @@ export default function UniversitiesPage() {
             <div>
               <select
                 value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
+                onChange={(e) => handleFilterChange('country', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">所有国家</option>
@@ -174,7 +223,7 @@ export default function UniversitiesPage() {
             <div>
               <select
                 value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
+                onChange={(e) => handleFilterChange('type', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">所有类型</option>
@@ -192,7 +241,7 @@ export default function UniversitiesPage() {
             </div>
             <select
               value={selectedStrength}
-              onChange={(e) => setSelectedStrength(e.target.value)}
+              onChange={(e) => handleFilterChange('strength', e.target.value)}
               className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">所有专业</option>
@@ -202,6 +251,45 @@ export default function UniversitiesPage() {
                 </option>
               ))}
             </select>
+            
+            {/* 排名范围筛选 */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">排名:</span>
+              <input
+                type="number"
+                placeholder="最低"
+                value={rankMin}
+                onChange={(e) => handleFilterChange('rankMin', e.target.value)}
+                className="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                min="1"
+                max="100"
+              />
+              <span className="text-sm text-gray-500">-</span>
+              <input
+                type="number"
+                placeholder="最高"
+                value={rankMax}
+                onChange={(e) => handleFilterChange('rankMax', e.target.value)}
+                className="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                min="1"
+                max="100"
+              />
+            </div>
+            
+            {/* 学费范围筛选 */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">最高学费:</span>
+              <input
+                type="number"
+                placeholder="美元"
+                value={tuitionMax}
+                onChange={(e) => handleFilterChange('tuitionMax', e.target.value)}
+                className="w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                min="0"
+                step="1000"
+              />
+            </div>
+            
             <button
               onClick={handleSearch}
               className="px-4 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
