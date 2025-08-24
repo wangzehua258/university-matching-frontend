@@ -32,23 +32,43 @@ export default function UniversitiesPage() {
   const [countries, setCountries] = useState<string[]>([]);
   const [strengths, setStrengths] = useState<string[]>([]);
   const [selectedStrength, setSelectedStrength] = useState('');
+  
+  // 分页状态
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalUniversities, setTotalUniversities] = useState(0);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrev, setHasPrev] = useState(false);
 
   const loadUniversities = useCallback(async () => {
     try {
-      const params: Record<string, string | number> = {};
+      const params: Record<string, string | number> = {
+        page: currentPage,
+        page_size: 9  // 每页9所学校
+      };
       if (searchTerm) params.search = searchTerm;
       if (selectedCountry) params.country = selectedCountry;
       if (selectedType) params.type = selectedType;
       if (selectedStrength) params.strength = selectedStrength;
 
       const data = await universityAPI.getUniversities(params);
-      setUniversities(data);
+      // 适配新的API响应格式：如果是分页对象，提取universities数组；如果是数组，直接使用
+      const universitiesData = data.universities || data;
+      setUniversities(universitiesData);
+      
+      // 保存分页信息
+      if (data.total !== undefined) {
+        setTotalUniversities(data.total);
+        setTotalPages(data.total_pages || Math.ceil(data.total / 9));
+        setHasNext(data.has_next || false);
+        setHasPrev(data.has_prev || false);
+      }
     } catch (error) {
       console.error('加载大学数据失败:', error);
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, selectedCountry, selectedType, selectedStrength]);
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage]);
 
   useEffect(() => {
     loadUniversities();
@@ -69,6 +89,7 @@ export default function UniversitiesPage() {
   };
 
   const handleSearch = () => {
+    setCurrentPage(1); // 搜索时重置到第一页
     loadUniversities();
   };
 
@@ -77,7 +98,25 @@ export default function UniversitiesPage() {
     setSelectedCountry('');
     setSelectedType('');
     setSelectedStrength('');
+    setCurrentPage(1); // 清除筛选时重置到第一页
     loadUniversities();
+  };
+
+  // 分页处理函数
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleNextPage = () => {
+    if (hasNext) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (hasPrev) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   return (
@@ -266,6 +305,76 @@ export default function UniversitiesPage() {
         {!loading && universities.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-600">没有找到符合条件的大学</p>
+          </div>
+        )}
+
+        {/* 分页组件 */}
+        {!loading && universities.length > 0 && totalPages > 1 && (
+          <div className="mt-8 flex justify-center">
+            <div className="flex items-center space-x-2">
+              {/* 上一页按钮 */}
+              <button
+                onClick={handlePrevPage}
+                disabled={!hasPrev}
+                className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  hasPrev
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                上一页
+              </button>
+
+              {/* 页码按钮 */}
+              <div className="flex space-x-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`px-3 py-2 rounded-md text-sm font-medium ${
+                        currentPage === pageNum
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 下一页按钮 */}
+              <button
+                onClick={handleNextPage}
+                disabled={!hasNext}
+                className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  hasNext
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                下一页
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* 分页信息 */}
+        {!loading && universities.length > 0 && (
+          <div className="mt-4 text-center text-sm text-gray-600">
+            显示第 {currentPage} 页，共 {totalPages} 页，总计 {totalUniversities} 所大学
           </div>
         )}
       </div>
