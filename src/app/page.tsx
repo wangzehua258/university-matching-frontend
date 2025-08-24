@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { GraduationCap, Users, Brain, BookOpen, ArrowRight } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight, Search } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -59,24 +59,24 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900">
-              四大核心功能
+              三大核心功能
             </h2>
             <p className="mt-4 text-lg text-gray-600">
               全方位满足您的留学规划需求
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* 功能1：学校信息库 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* 功能1：大学浏览 */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
               <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
-                <BookOpen className="h-6 w-6 text-white" />
+                <Search className="h-6 w-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                学校信息库
+                大学浏览
               </h3>
               <p className="text-gray-600 mb-4">
-                全面、易筛选的学校信息，支持多维度搜索和筛选，辅助初步判断。
+                浏览全球顶尖大学，了解学校特色、专业设置和录取要求。
               </p>
               <Link
                 href="/universities"
@@ -87,7 +87,27 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* 功能2：家长评估 */}
+            {/* 功能2：知识内容 */}
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl">
+              <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                选校策略知识
+              </h3>
+              <p className="text-gray-600 mb-4">
+                提供理性专业的选校基础知识，提升平台可信度。
+              </p>
+              <Link
+                href="/knowledge"
+                className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
+              >
+                了解更多
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* 功能3：家长评估 */}
             <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
               <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
                 <Users className="h-6 w-6 text-white" />
@@ -107,8 +127,8 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* 功能3：学生测评 */}
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+            {/* 功能4：学生测评 - 暂时隐藏，后续开发 */}
+            {/* <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
               <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4">
                 <Brain className="h-6 w-6 text-white" />
               </div>
@@ -125,27 +145,7 @@ export default function HomePage() {
                 开始测评
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
-            </div>
-
-            {/* 功能4：知识内容 */}
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl">
-              <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4">
-                <GraduationCap className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                选校策略知识
-              </h3>
-              <p className="text-gray-600 mb-4">
-                提供理性专业的选校基础知识，提升平台可信度。
-              </p>
-              <Link
-                href="/knowledge"
-                className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
-              >
-                了解更多
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

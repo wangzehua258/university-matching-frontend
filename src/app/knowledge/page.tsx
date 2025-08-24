@@ -172,13 +172,14 @@ const KnowledgePage = () => {
               <Users className="w-4 h-4" />
               <span>开始家长评估</span>
             </button>
-            <button
+            {/* 学生测评按钮 - 暂时隐藏，后续开发 */}
+            {/* <button
               onClick={() => router.push('/student-test/start')}
               className="bg-white text-orange-600 px-6 py-3 rounded-md font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
             >
               <Brain className="w-4 h-4" />
               <span>开始学生测评</span>
-            </button>
+            </button> */}
           </div>
         </div>
 

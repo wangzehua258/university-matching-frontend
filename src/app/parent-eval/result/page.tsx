@@ -3,15 +3,11 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { evaluationAPI } from '@/lib/api';
-import { GraduationCap, Award, Globe, MapPin, DollarSign, Users } from 'lucide-react';
+import { GraduationCap, Award, Globe, MapPin, DollarSign } from 'lucide-react';
 
 // Utility functions - moved outside component scope
 const formatTuition = (tuition: number) => {
   return `$${(tuition / 1000).toFixed(0)}k`;
-};
-
-const formatAcceptanceRate = (rate: number) => {
-  return `${(rate * 100).toFixed(1)}%`;
 };
 
 const getSchoolSizeText = (size: string) => {
@@ -265,14 +261,10 @@ const SchoolCard = ({ school }: { school: School }) => {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+      <div className="grid grid-cols-3 gap-3 text-sm mb-3">
         <div className="flex items-center text-gray-600">
           <DollarSign className="w-4 h-4 mr-1" />
           <span>学费: {formatTuition(school.tuition)}/年</span>
-        </div>
-        <div className="flex items-center text-gray-600">
-          <Users className="w-4 h-4 mr-1" />
-          <span>录取率: {formatAcceptanceRate(school.acceptanceRate)}</span>
         </div>
         <div className="flex items-center text-gray-600">
           <span>类型: {getSchoolTypeText(school.type)}</span>

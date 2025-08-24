@@ -24,6 +24,7 @@ const ParentEvalStart = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [formData, setFormData] = useState<FormData>({
     grade: '',
     gpa_range: '',
@@ -42,7 +43,53 @@ const ParentEvalStart = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const validateCurrentStep = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    if (currentStep === 1) {
+      // 验证基本信息
+      if (!formData.grade) {
+        newErrors.grade = '请选择年级';
+      }
+      if (!formData.gpa_range) {
+        newErrors.gpa_range = '请选择GPA范围';
+      }
+      if (formData.sat_score && parseInt(formData.sat_score) < 1350) {
+        newErrors.sat_score = 'SAT分数不能低于1350分';
+      }
+      if (formData.activities.length < 2) {
+        newErrors.activities = '请至少选择2项活动经历';
+      }
+      if (!formData.target_country) {
+        newErrors.target_country = '请选择目标国家';
+      }
+    } else if (currentStep === 2) {
+      // 验证兴趣偏好
+      if (formData.interest_fields.length < 3) {
+        newErrors.interest_fields = '请至少选择3个兴趣方向';
+      }
+      if (!formData.school_type_preference) {
+        newErrors.school_type_preference = '请选择学校类型偏好';
+      }
+    } else if (currentStep === 3) {
+      // 验证家庭取向
+      if (!formData.budget) {
+        newErrors.budget = '请选择预算范围';
+      }
+      if (!formData.family_expectation) {
+        newErrors.family_expectation = '请选择家长期望';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleNext = async () => {
+    if (!validateCurrentStep()) {
+      return; // 验证失败，不继续
+    }
+    
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -123,29 +170,39 @@ const ParentEvalStart = () => {
           <select
             value={formData.gpa_range}
             onChange={(e) => handleInputChange('gpa_range', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.gpa_range ? 'border-red-500' : 'border-gray-300'
+            }`}
           >
             <option value="">请选择GPA范围</option>
-            <option value="2.5-3.0">2.5-3.0</option>
-            <option value="3.0-3.5">3.0-3.5</option>
-            <option value="3.5-3.8">3.5-3.8</option>
-            <option value="3.8以上">3.8以上</option>
+            <option value="3.9+">3.9+</option>
+            <option value="3.8+">3.8+</option>
+            <option value="3.6+">3.6+</option>
+            <option value="3.6-">3.6-</option>
           </select>
+          {errors.gpa_range && (
+            <p className="mt-1 text-sm text-red-600">{errors.gpa_range}</p>
+          )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            SAT分数 (可选)
+            SAT分数 (可选，最低1350)
           </label>
           <input
             type="number"
-            min="400"
+            min="1350"
             max="1600"
             value={formData.sat_score}
             onChange={(e) => handleInputChange('sat_score', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.sat_score ? 'border-red-500' : 'border-gray-300'
+            }`}
             placeholder="例如: 1450"
           />
+          {errors.sat_score && (
+            <p className="mt-1 text-sm text-red-600">{errors.sat_score}</p>
+          )}
         </div>
 
         <div>
@@ -166,30 +223,33 @@ const ParentEvalStart = () => {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          活动经历 (可多选)
-        </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {['竞赛', '科研', '学生会', '社团活动', '志愿服务', '实习经历', '艺术特长', '体育特长', '创业经历'].map((activity) => (
-            <label key={activity} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.activities.includes(activity)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    handleInputChange('activities', [...formData.activities, activity]);
-                  } else {
-                    handleInputChange('activities', formData.activities.filter(a => a !== activity));
-                  }
-                }}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">{activity}</span>
-            </label>
-          ))}
+              <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            活动经历 (可多选，最少选择2个)
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {['学术竞赛', '科研', '学生会', '社团活动', '志愿服务', '实习经历', '职业规划', '创业经历', '推荐信准备', '社区服务'].map((activity) => (
+              <label key={activity} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.activities.includes(activity)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      handleInputChange('activities', [...formData.activities, activity]);
+                    } else {
+                      handleInputChange('activities', formData.activities.filter(a => a !== activity));
+                    }
+                  }}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">{activity}</span>
+              </label>
+            ))}
+          </div>
+          {errors.activities && (
+            <p className="mt-1 text-sm text-red-600">{errors.activities}</p>
+          )}
         </div>
-      </div>
     </div>
   );
 
@@ -199,10 +259,10 @@ const ParentEvalStart = () => {
       
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          兴趣方向 (可多选)
+          兴趣方向 (可多选，最少选择3个)
         </label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {['计算机科学', '人工智能', '工程学', '商科', '医学', '艺术设计', '人文社科', '自然科学', '教育学', '法学'].map((field) => (
+          {['计算机科学', '公共政策', '经济学', '社会科学', '工程学', '物理学', '化学', '商科', '心理学', '艺术设计', '生物学', '创业', '人文社科', '医药学', '国际关系', '政治学', '农学', '自然科学', '教育学', '法学'].map((field) => (
             <label key={field} className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -219,8 +279,11 @@ const ParentEvalStart = () => {
               <span className="text-sm text-gray-700">{field}</span>
             </label>
           ))}
+                  </div>
+          {errors.interest_fields && (
+            <p className="mt-1 text-sm text-red-600">{errors.interest_fields}</p>
+          )}
         </div>
-      </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -283,11 +346,10 @@ const ParentEvalStart = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">请选择预算</option>
-          <option value="<20w">20万以下</option>
-          <option value="20-40w">20-40万</option>
-          <option value="30-50w">30-50万</option>
-          <option value="40-60w">40-60万</option>
-          <option value="不设限">不设限</option>
+          <option value="35万-40万">35万-40万</option>
+          <option value="40万-50万">40万-50万</option>
+          <option value="50万-60万">50万-60万</option>
+          <option value="60万+">60万+</option>
         </select>
       </div>
 
