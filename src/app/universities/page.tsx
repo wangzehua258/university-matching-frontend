@@ -59,20 +59,43 @@ export default function UniversitiesPage() {
       if (rankMax) params.rank_max = parseInt(rankMax);
       if (tuitionMax) params.tuition_max = parseInt(tuitionMax);
 
-      const data = await universityAPI.getUniversities(params);
-      // 适配新的API响应格式：如果是分页对象，提取universities数组；如果是数组，直接使用
-      const universitiesData = data.universities || data;
-      setUniversities(universitiesData);
+      // 使用分页API端点
+      const data = await universityAPI.getUniversitiesPaginated(params);
+      // 分页API返回完整的分页信息
+      setUniversities(data.universities);
       
       // 保存分页信息
-      if (data.total !== undefined) {
-        setTotalUniversities(data.total);
-        setTotalPages(data.total_pages || Math.ceil(data.total / 9));
-        setHasNext(data.has_next || false);
-        setHasPrev(data.has_prev || false);
-      }
+      setTotalUniversities(data.total);
+      setTotalPages(data.total_pages);
+      setHasNext(data.has_next);
+      setHasPrev(data.has_prev);
     } catch (error) {
       console.error('加载大学数据失败:', error);
+      // 如果分页API失败，回退到普通API
+      try {
+        const fallbackParams: Record<string, string | number> = {
+          page: currentPage,
+          page_size: 9
+        };
+        if (searchTerm) fallbackParams.search = searchTerm;
+        if (selectedCountry) fallbackParams.country = selectedCountry;
+        if (selectedType) fallbackParams.type = selectedType;
+        if (selectedStrength) fallbackParams.strength = selectedStrength;
+        if (rankMin) fallbackParams.rank_min = parseInt(rankMin);
+        if (rankMax) fallbackParams.rank_max = parseInt(rankMax);
+        if (tuitionMax) fallbackParams.tuition_max = parseInt(tuitionMax);
+        
+        const fallbackData = await universityAPI.getUniversities(fallbackParams);
+        const universitiesData = fallbackData.universities || fallbackData;
+        setUniversities(universitiesData);
+        // 设置默认分页信息
+        setTotalUniversities(universitiesData.length);
+        setTotalPages(1);
+        setHasNext(false);
+        setHasPrev(false);
+      } catch (fallbackError) {
+        console.error('回退API也失败:', fallbackError);
+      }
     } finally {
       setLoading(false);
     }

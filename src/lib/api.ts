@@ -88,6 +88,12 @@ export const universityAPI = {
     return response.data;
   },
 
+  // 获取分页大学列表（支持筛选和分页）
+  getUniversitiesPaginated: async (params?: Record<string, string | number>) => {
+    const response = await api.get('/universities/paginated', { params });
+    return response.data;
+  },
+
   // 根据ID获取大学详情
   getUniversityById: async (id: string) => {
     const response = await api.get(`/universities/${id}`);
