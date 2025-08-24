@@ -12,14 +12,14 @@ interface University {
   state: string;
   rank: number;
   tuition: number;
-  intl_rate: number;  // 匹配后端API字段名
+  intl_rate: number;  // 使用数据库中的正确字段名
   type: string;
   strengths: string[];
-  gpt_summary: string;  // 匹配后端API字段名
-  logo_url?: string;    // 匹配后端API字段名
+  gpt_summary: string;  // 使用数据库中的正确字段名
+  logo_url?: string;    // 使用数据库中的正确字段名
   location?: string;
   personality_types?: string[];
-  school_size?: string;
+  school_size?: string;  // 使用数据库中的正确字段名
   description?: string;
 }
 
