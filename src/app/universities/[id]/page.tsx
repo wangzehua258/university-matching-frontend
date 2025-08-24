@@ -158,9 +158,11 @@ export default function UniversityDetailPage() {
                   <div className="text-sm text-green-600">国际生比例</div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <GraduationCap className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-purple-900">{university.strengths.length}</div>
-                  <div className="text-sm text-purple-600">优势专业</div>
+                  <Target className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-purple-900">
+                    {university.acceptance_rate ? (university.acceptance_rate * 100).toFixed(1) + '%' : 'N/A'}
+                  </div>
+                  <div className="text-sm text-purple-600">录取率</div>
                 </div>
               </div>
             </div>
@@ -328,7 +330,39 @@ export default function UniversityDetailPage() {
                 学校规模
               </h3>
               {university.school_size ? (
-                <p className="text-gray-700">{university.school_size}</p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">规模类型</span>
+                    <span className="font-medium capitalize">{university.school_size}</span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {(() => {
+                      const size = university.school_size;
+                      const type = university.type;
+                      
+                      if (size === 'small') {
+                        if (type === 'private') {
+                          return '小型私立大学，通常学生人数较少（10000人以下），师生比例低，提供个性化的学习体验和紧密的校园社区。';
+                        } else {
+                          return '小型公立大学，通常学生人数较少（15000人以下），注重本科教育质量，提供相对亲密的学术环境。';
+                        }
+                      } else if (size === 'medium') {
+                        if (type === 'private') {
+                          return '中型私立大学，学生人数适中（10000-45000人），平衡了资源丰富性和个性化关注，提供多样化的学术选择。';
+                        } else {
+                          return '中型公立大学，学生人数适中（15000-50000人），结合了公立大学的资源和适中的班级规模。';
+                        }
+                      } else if (size === 'large') {
+                        if (type === 'private') {
+                          return '大型私立大学，学生人数较多（45000人以上），提供广泛的学术资源和研究机会，但班级规模可能较大。';
+                        } else {
+                          return '大型公立大学，学生人数较多（50000人以上），资源丰富，课程选择多样，但需要学生主动寻求个性化支持。';
+                        }
+                      }
+                      return '学校规模信息';
+                    })()}
+                  </div>
+                </div>
               ) : (
                 <div className="text-center py-3 text-gray-500 text-sm">
                   <Building2 className="h-8 w-8 mx-auto mb-2 text-gray-300" />
