@@ -260,7 +260,7 @@ export default function UniversitiesPage() {
           <div className="mt-4 flex flex-wrap gap-4 items-center">
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-gray-500" />
-              <span className="text-sm text-gray-600">专业筛选:</span>
+              <span className="text-sm text-gray-600">优势专业筛选:</span>
             </div>
             <select
               value={selectedStrength}
