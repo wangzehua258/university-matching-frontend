@@ -59,14 +59,14 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900">
-              三大核心功能
+              两大核心功能
             </h2>
             <p className="mt-4 text-lg text-gray-600">
               全方位满足您的留学规划需求
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 功能1：大学浏览 */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
               <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
@@ -83,26 +83,6 @@ export default function HomePage() {
                 className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
               >
                 立即浏览
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </div>
-
-            {/* 功能2：知识内容 */}
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl">
-              <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4">
-                <GraduationCap className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                选校策略知识
-              </h3>
-              <p className="text-gray-600 mb-4">
-                提供理性专业的选校基础知识，提升平台可信度。
-              </p>
-              <Link
-                href="/knowledge"
-                className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
-              >
-                了解更多
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
