@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { evaluationAPI } from '@/lib/api';
 import { getAnonymousUserId } from '@/lib/useAnonymousUser';
+import { AUForm, AUFormData } from '../forms/AUForm';
+import { UKForm, UKFormData } from '../forms/UKForm';
+import { SGForm, SGFormData } from '../forms/SGForm';
 
 interface FormData {
   grade: string;
@@ -22,9 +26,54 @@ interface FormData {
 
 const ParentEvalStart = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  // AU/UK/SG 专用表单数据，单步提交
+  const [auData, setAuData] = useState<AUFormData>({
+    academic_band: '',
+    interests: [],
+    budget_usd: 0,
+    wil_preference: '',
+    go8_preference: '',
+    psw_importance: '',
+    english_readiness: '',
+    city_preferences: [],
+    intl_community_importance: '',
+    hard_english_required_exclude: false,
+    hard_budget_must_within: false,
+  });
+  const [ukData, setUkData] = useState<UKFormData>({
+    academic_band: '',
+    interests: [],
+    budget_usd: 0,
+    ucas_route: '',
+    foundation_need: '',
+    placement_year_pref: '',
+    russell_pref: '',
+    prep_level: '',
+    region_pref: '',
+    intl_env_importance: '',
+    hard_budget_must_within: false,
+    oxbridge_must_cover: false,
+  });
+  const [sgData, setSgData] = useState<SGFormData>({
+    academic_band: '',
+    interests: [],
+    budget_usd: 0,
+    orientation: '',
+    bond_acceptance: '',
+    interview_portfolio: '',
+    want_double_degree: false,
+    want_exchange: false,
+    safety_importance: '',
+    scholarship_importance: '',
+    hard_budget_must_within: false,
+    tg_must: false,
+    hard_refuse_bond: false,
+    hard_refuse_interview_or_portfolio: false,
+  });
   const [formData, setFormData] = useState<FormData>({
     grade: '',
     gpa_range: '',
@@ -38,6 +87,14 @@ const ParentEvalStart = () => {
     family_expectation: '',
     internship_important: true,
   });
+
+  // Lock country from query if provided
+  useEffect(() => {
+    const c = searchParams?.get('country') || '';
+    if (c) {
+      setFormData(prev => ({ ...prev, target_country: c }));
+    }
+  }, [searchParams]);
 
   const handleInputChange = (field: keyof FormData, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -105,23 +162,86 @@ const ParentEvalStart = () => {
       // 获取匿名用户ID
       const anonymousUserId = getAnonymousUserId();
       
-      // 准备提交数据
-      const evaluationData = {
-        user_id: anonymousUserId,
-        input: {
-          grade: formData.grade,
-          gpa_range: formData.gpa_range,
-          sat_score: formData.sat_score ? parseInt(formData.sat_score) : null,
-          activities: formData.activities,
-          interest_fields: formData.interest_fields,
-          target_country: formData.target_country,
-          school_type_preference: formData.school_type_preference,
-          reputation_important: formData.reputation_important,
-          budget: formData.budget,
-          family_expectation: formData.family_expectation,
-          internship_important: formData.internship_important,
-        }
-      };
+      // 分国家提交
+      const country = formData.target_country;
+      let evaluationData: any = null;
+      if (country === 'Australia') {
+        evaluationData = {
+          user_id: anonymousUserId,
+          input: {
+            target_country: 'Australia',
+            academic_band: auData.academic_band,
+            interests: auData.interests,
+            budget_usd: auData.budget_usd,
+            wil_preference: auData.wil_preference,
+            go8_preference: auData.go8_preference,
+            psw_importance: auData.psw_importance,
+            english_readiness: auData.english_readiness,
+            city_preferences: auData.city_preferences,
+            intl_community_importance: auData.intl_community_importance,
+            hard_english_required_exclude: auData.hard_english_required_exclude,
+            hard_budget_must_within: auData.hard_budget_must_within,
+          }
+        };
+      } else if (country === 'United Kingdom') {
+        evaluationData = {
+          user_id: anonymousUserId,
+          input: {
+            target_country: 'United Kingdom',
+            academic_band: ukData.academic_band,
+            interests: ukData.interests,
+            budget_usd: ukData.budget_usd,
+            ucas_route: ukData.ucas_route,
+            foundation_need: ukData.foundation_need,
+            placement_year_pref: ukData.placement_year_pref,
+            russell_pref: ukData.russell_pref,
+            prep_level: ukData.prep_level,
+            region_pref: ukData.region_pref,
+            intl_env_importance: ukData.intl_env_importance,
+            hard_budget_must_within: ukData.hard_budget_must_within,
+            oxbridge_must_cover: ukData.oxbridge_must_cover,
+          }
+        };
+      } else if (country === 'Singapore') {
+        evaluationData = {
+          user_id: anonymousUserId,
+          input: {
+            target_country: 'Singapore',
+            academic_band: sgData.academic_band,
+            interests: sgData.interests,
+            budget_usd: sgData.budget_usd,
+            orientation: sgData.orientation,
+            bond_acceptance: sgData.bond_acceptance,
+            interview_portfolio: sgData.interview_portfolio,
+            want_double_degree: sgData.want_double_degree,
+            want_exchange: sgData.want_exchange,
+            safety_importance: sgData.safety_importance,
+            scholarship_importance: sgData.scholarship_importance,
+            hard_budget_must_within: sgData.hard_budget_must_within,
+            tg_must: sgData.tg_must,
+            hard_refuse_bond: sgData.hard_refuse_bond,
+            hard_refuse_interview_or_portfolio: sgData.hard_refuse_interview_or_portfolio,
+          }
+        };
+      } else {
+        // 默认美国旧表单
+        evaluationData = {
+          user_id: anonymousUserId,
+          input: {
+            grade: formData.grade,
+            gpa_range: formData.gpa_range,
+            sat_score: formData.sat_score ? parseInt(formData.sat_score) : null,
+            activities: formData.activities,
+            interest_fields: formData.interest_fields,
+            target_country: formData.target_country || 'USA',
+            school_type_preference: formData.school_type_preference,
+            reputation_important: formData.reputation_important,
+            budget: formData.budget,
+            family_expectation: formData.family_expectation,
+            internship_important: formData.internship_important,
+          }
+        };
+      }
 
       // 调用API创建评估
       const result = await evaluationAPI.createParentEvaluation(evaluationData);
@@ -205,6 +325,7 @@ const ParentEvalStart = () => {
           )}
         </div>
 
+        {!searchParams?.get('country') && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             目标国家
@@ -215,12 +336,13 @@ const ParentEvalStart = () => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">请选择国家</option>
-            <option value="USA">美国</option>
-            <option value="UK">英国</option>
-            <option value="Canada">加拿大</option>
             <option value="Australia">澳大利亚</option>
+            <option value="United Kingdom">英国</option>
+            <option value="Singapore">新加坡</option>
+            <option value="USA">美国</option>
           </select>
         </div>
+        )}
       </div>
 
               <div>
@@ -368,6 +490,41 @@ const ParentEvalStart = () => {
   );
 
   const renderCurrentStep = () => {
+    const c = formData.target_country;
+    // AU/UK/SG 走单页问卷
+    if (c === 'Australia') {
+      return (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">澳大利亚家长评估（10题）</h2>
+          <AUForm value={auData} onChange={(v) => setAuData((prev) => ({ ...prev, ...v }))} />
+          <div className="flex justify-end">
+            <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
+          </div>
+        </div>
+      );
+    }
+    if (c === 'United Kingdom') {
+      return (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">英国家长评估（10题）</h2>
+          <UKForm value={ukData} onChange={(v) => setUkData((prev) => ({ ...prev, ...v }))} />
+          <div className="flex justify-end">
+            <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
+          </div>
+        </div>
+      );
+    }
+    if (c === 'Singapore') {
+      return (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">新加坡家长评估（10题）</h2>
+          <SGForm value={sgData} onChange={(v) => setSgData((prev) => ({ ...prev, ...v }))} />
+          <div className="flex justify-end">
+            <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
+          </div>
+        </div>
+      );
+    }
     switch (currentStep) {
       case 1:
         return renderStep1();

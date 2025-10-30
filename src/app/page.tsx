@@ -38,7 +38,7 @@ export default function HomePage() {
             </p>
             <div className="mt-10 flex justify-center space-x-4">
               <Link
-                href="/parent-eval/start"
+                href="/parent-eval/select"
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 开始家长评估
@@ -99,7 +99,7 @@ export default function HomePage() {
                 生成系统化、个性化的择校建议，包含推荐学校和申请策略。
               </p>
               <Link
-                href="/parent-eval/start"
+                href="/parent-eval/select"
                 className="inline-flex items-center text-green-600 hover:text-green-700 font-medium"
               >
                 开始评估
@@ -141,7 +141,7 @@ export default function HomePage() {
           </p>
           <div className="flex justify-center space-x-4">
             <Link
-              href="/parent-eval/start"
+              href="/parent-eval/select"
               className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors"
             >
               立即开始
