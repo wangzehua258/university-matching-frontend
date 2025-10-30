@@ -3,7 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, MapPin, Star, DollarSign, Users } from 'lucide-react';
-import { universityAPI } from '@/lib/api';
+import { universityAPI, api } from '@/lib/api';
+import { useSearchParams } from 'next/navigation';
+import axios from 'axios';
 
 interface University {
   id: string;
@@ -24,6 +26,7 @@ interface University {
 }
 
 export default function UniversitiesPage() {
+  const searchParams = useSearchParams();
   const [universities, setUniversities] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,6 +50,36 @@ export default function UniversitiesPage() {
 
   const loadUniversities = useCallback(async () => {
     try {
+      // Country-specific endpoints for AU/UK/SG
+      if (selectedCountry === 'Australia' || selectedCountry === 'United Kingdom' || selectedCountry === 'Singapore') {
+        const endpoint = selectedCountry === 'Australia' ? '/international/au' : selectedCountry === 'United Kingdom' ? '/international/uk' : '/international/sg';
+        const resp = await api.get(endpoint, { params: { page: currentPage, page_size: 9 } });
+        const list = resp.data as any[];
+        // Map to minimal shape compatible with existing card UI
+        const mapped = list.map((u: any) => ({
+          id: u.id,
+          name: u.name,
+          country: u.country,
+          state: u.city || '',
+          rank: u.rank,
+          tuition: u.tuition_usd || u.tuition || 0,
+          intl_rate: u.intlRate || 0,
+          type: (u.currency ? u.currency : 'public'),
+          strengths: Array.isArray(u.strengths) ? u.strengths : (typeof u.strengths === 'string' ? u.strengths.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
+          gpt_summary: u.website || '',
+          logo_url: undefined,
+          location: undefined,
+          personality_types: undefined,
+          school_size: undefined,
+          description: undefined,
+        }));
+        setUniversities(mapped);
+        setTotalUniversities(mapped.length);
+        setTotalPages(1);
+        setHasNext(false);
+        setHasPrev(false);
+        return;
+      }
       const params: Record<string, string | number> = {
         page: currentPage,
         page_size: 9  // 每页9所学校
@@ -106,13 +139,24 @@ export default function UniversitiesPage() {
     loadFilters();
   }, [loadUniversities]);
 
+  // Initialize selected country from query
+  useEffect(() => {
+    const initial = searchParams?.get('country') || '';
+    if (initial) {
+      setSelectedCountry(initial);
+    }
+  }, [searchParams]);
+
   const loadFilters = async () => {
     try {
       const [countriesData, strengthsData] = await Promise.all([
         universityAPI.getCountries(),
         universityAPI.getStrengths()
       ]);
-      setCountries(countriesData.countries);
+      const base = Array.isArray(countriesData.countries) ? countriesData.countries : [];
+      const extras = ['Australia', 'United Kingdom', 'Singapore'];
+      const merged = Array.from(new Set([...base, ...extras]));
+      setCountries(merged);
       setStrengths(strengthsData.strengths);
     } catch (error) {
       console.error('加载筛选数据失败:', error);
@@ -398,7 +442,9 @@ export default function UniversitiesPage() {
                   </p>
 
                   <Link
-                    href={`/universities/${university.id}`}
+                    href={selectedCountry && ['Australia','United Kingdom','Singapore'].includes(selectedCountry)
+                      ? `/universities/${university.id}?country=${encodeURIComponent(selectedCountry)}`
+                      : `/universities/${university.id}`}
                     className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
                   >
                     查看详情

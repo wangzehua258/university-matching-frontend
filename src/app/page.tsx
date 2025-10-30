@@ -16,7 +16,7 @@ export default function HomePage() {
             </div>
             <div className="flex space-x-4">
               <Link
-                href="/universities"
+                href="/universities/select"
                 className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
               >
                 开始探索
@@ -44,7 +44,7 @@ export default function HomePage() {
                 开始家长评估
               </Link>
               <Link
-                href="/universities"
+                href="/universities/select"
                 className="border border-blue-600 text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-50 transition-colors"
               >
                 浏览大学库
@@ -79,7 +79,7 @@ export default function HomePage() {
                 浏览全球顶尖大学，了解学校特色、专业设置和录取要求。
               </p>
               <Link
-                href="/universities"
+                href="/universities/select"
                 className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
               >
                 立即浏览
@@ -147,7 +147,7 @@ export default function HomePage() {
               立即开始
             </Link>
             <Link
-              href="/universities"
+              href="/universities/select"
               className="border border-white text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors"
             >
               浏览大学

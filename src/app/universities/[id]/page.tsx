@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import axios from 'axios';
+import { api } from '@/lib/api';
 import Link from 'next/link';
 import { 
   ArrowLeft, 
@@ -55,6 +57,7 @@ interface University {
 export default function UniversityDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [university, setUniversity] = useState<University | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,8 +66,46 @@ export default function UniversityDetailPage() {
     const loadUniversity = async () => {
       try {
         if (params.id) {
-          const data = await universityAPI.getUniversityById(params.id as string);
-          setUniversity(data);
+          const country = searchParams?.get('country');
+          if (country && ['Australia','United Kingdom','Singapore'].includes(country)) {
+            const endpoint = country === 'Australia' ? `/international/au/${params.id}` : country === 'United Kingdom' ? `/international/uk/${params.id}` : `/international/sg/${params.id}`;
+            const resp = await api.get(endpoint);
+            const u = resp.data as any;
+            const mapped: University = {
+              id: u.id,
+              name: u.name,
+              country: u.country,
+              state: u.city || '',
+              rank: u.rank,
+              tuition: u.tuition_usd || 0,
+              intl_rate: u.intlRate || 0,
+              type: u.currency || 'public',
+              strengths: Array.isArray(u.strengths) ? u.strengths : (typeof u.strengths === 'string' ? u.strengths.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
+              gpt_summary: u.website || '',
+              logo_url: undefined,
+              location: undefined,
+              personality_types: undefined,
+              school_size: undefined,
+              description: undefined,
+              supports_ed: undefined,
+              supports_ea: undefined,
+              supports_rd: undefined,
+              internship_support_score: undefined,
+              acceptance_rate: undefined,
+              sat_range: undefined,
+              act_range: undefined,
+              gpa_range: undefined,
+              application_deadline: undefined,
+              website: u.website,
+              has_internship_program: undefined,
+              has_research_program: undefined,
+              tags: undefined,
+            };
+            setUniversity(mapped);
+          } else {
+            const data = await universityAPI.getUniversityById(params.id as string);
+            setUniversity(data);
+          }
         }
       } catch (err) {
         setError('加载大学信息失败');
@@ -75,7 +116,7 @@ export default function UniversityDetailPage() {
     };
 
     loadUniversity();
-  }, [params.id]);
+  }, [params.id, searchParams]);
 
   if (loading) {
     return (

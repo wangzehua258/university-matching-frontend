@@ -12,7 +12,7 @@ const getBaseURL = () => {
   return 'http://localhost:8000/api';
 };
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
