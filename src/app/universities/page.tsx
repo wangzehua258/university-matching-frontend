@@ -50,36 +50,7 @@ export default function UniversitiesPage() {
 
   const loadUniversities = useCallback(async () => {
     try {
-      // Country-specific endpoints for AU/UK/SG
-      if (selectedCountry === 'Australia' || selectedCountry === 'United Kingdom' || selectedCountry === 'Singapore') {
-        const endpoint = selectedCountry === 'Australia' ? '/international/au' : selectedCountry === 'United Kingdom' ? '/international/uk' : '/international/sg';
-        const resp = await api.get(endpoint, { params: { page: currentPage, page_size: 9 } });
-        const list = resp.data as any[];
-        // Map to minimal shape compatible with existing card UI
-        const mapped = list.map((u: any) => ({
-          id: u.id,
-          name: u.name,
-          country: u.country,
-          state: u.city || '',
-          rank: u.rank,
-          tuition: u.tuition_usd || u.tuition || 0,
-          intl_rate: u.intlRate || 0,
-          type: (u.currency ? u.currency : 'public'),
-          strengths: Array.isArray(u.strengths) ? u.strengths : (typeof u.strengths === 'string' ? u.strengths.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
-          gpt_summary: u.website || '',
-          logo_url: undefined,
-          location: undefined,
-          personality_types: undefined,
-          school_size: undefined,
-          description: undefined,
-        }));
-        setUniversities(mapped);
-        setTotalUniversities(mapped.length);
-        setTotalPages(1);
-        setHasNext(false);
-        setHasPrev(false);
-        return;
-      }
+      // Always call unified paginated endpoint with country param
       const params: Record<string, string | number> = {
         page: currentPage,
         page_size: 9  // 每页9所学校
@@ -270,21 +241,23 @@ export default function UniversitiesPage() {
               </div>
             </div>
 
-            {/* Country Filter */}
-            <div>
-              <select
-                value={selectedCountry}
-                onChange={(e) => handleFilterChange('country', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">所有国家</option>
-                {countries.map((country) => (
-                  <option key={country} value={country}>
-                    {country}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Country Fixed: hide selector when URL 已指定 */}
+            {!(searchParams?.get('country')) && (
+              <div>
+                <select
+                  value={selectedCountry}
+                  onChange={(e) => handleFilterChange('country', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">所有国家</option>
+                  {countries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Type Filter */}
             <div>

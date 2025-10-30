@@ -103,8 +103,8 @@ export default function UniversityDetailPage() {
             };
             setUniversity(mapped);
           } else {
-            const data = await universityAPI.getUniversityById(params.id as string);
-            setUniversity(data);
+          const data = await universityAPI.getUniversityById(params.id as string);
+          setUniversity(data);
           }
         }
       } catch (err) {
