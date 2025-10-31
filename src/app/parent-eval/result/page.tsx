@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { evaluationAPI } from '@/lib/api';
 import { GraduationCap, Award, Globe, MapPin, DollarSign } from 'lucide-react';
 import { AUResultView } from './AUResultView';
+import { UKResultView } from './UKResultView';
 
 // Utility functions - moved outside component scope
 const formatTuition = (tuition: number) => {
@@ -149,7 +150,12 @@ const ParentEvalResultInner = () => {
     return <AUResultView result={result as any} />;
   }
 
-  // 其他国家（USA/UK/SG）使用原有视图
+  // 如果是英国，使用专用视图
+  if (result.targetCountry === 'United Kingdom') {
+    return <UKResultView result={result as any} />;
+  }
+
+  // 其他国家（USA/SG）使用原有视图
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 py-8">

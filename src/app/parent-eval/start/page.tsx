@@ -52,18 +52,28 @@ const ParentEvalStart = () => {
     main_concern: '',
   });
   const [ukData, setUkData] = useState<UKFormData>({
+    // A. 学术与志愿
     academic_band: '',
     interests: [],
+    reputation_vs_value: '',
+    // B. 费用与兜底
     budget_usd: 0,
-    ucas_route: '',
+    hard_budget_must_within: false,
     foundation_need: '',
+    // C. UCAS路线与准备度
+    ucas_route: '',
+    oxbridge_must_cover: false,
     placement_year_pref: '',
-    russell_pref: '',
     prep_level: '',
+    // D. 学校类型与地区
+    russell_pref: '',
     region_pref: '',
     intl_env_importance: '',
-    hard_budget_must_within: false,
-    oxbridge_must_cover: false,
+    // E. 节奏与确定性
+    intake_preference: '',
+    accept_foundation: true, // 默认接受
+    budget_tolerance: '',
+    main_concern: '',
   });
   const [sgData, setSgData] = useState<SGFormData>({
     academic_band: '',
@@ -209,18 +219,28 @@ const ParentEvalStart = () => {
           user_id: anonymousUserId,
           input: {
             target_country: 'United Kingdom',
+            // A. 学术与志愿 (Q1-Q3)
             academic_band: ukData.academic_band,
             interests: ukData.interests,
+            reputation_vs_value: ukData.reputation_vs_value, // Q3: 权重调节
+            // B. 费用与兜底 (Q4-Q5)
             budget_usd: ukData.budget_usd,
-            ucas_route: ukData.ucas_route,
+            hard_budget_must_within: ukData.hard_budget_must_within,
             foundation_need: ukData.foundation_need,
+            // C. UCAS路线与准备度 (Q6-Q8)
+            ucas_route: ukData.ucas_route,
+            oxbridge_must_cover: ukData.oxbridge_must_cover,
             placement_year_pref: ukData.placement_year_pref,
-            russell_pref: ukData.russell_pref,
             prep_level: ukData.prep_level,
+            // D. 学校类型与地区 (Q9-Q11)
+            russell_pref: ukData.russell_pref,
             region_pref: ukData.region_pref,
             intl_env_importance: ukData.intl_env_importance,
-            hard_budget_must_within: ukData.hard_budget_must_within,
-            oxbridge_must_cover: ukData.oxbridge_must_cover,
+            // E. 节奏与确定性 (Q12-Q15)
+            intake_preference: ukData.intake_preference, // Q12: 入学批次（小加分）
+            accept_foundation: ukData.accept_foundation, // Q13: 接受预科路线
+            budget_tolerance: ukData.budget_tolerance, // Q14: 预算容忍度
+            main_concern: ukData.main_concern, // Q15: 最担心点
           }
         };
       } else if (country === 'Singapore') {
