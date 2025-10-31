@@ -76,20 +76,28 @@ const ParentEvalStart = () => {
     main_concern: '',
   });
   const [sgData, setSgData] = useState<SGFormData>({
+    // A. 学术与志愿
     academic_band: '',
     interests: [],
+    reputation_vs_value: '',
+    // B. 预算与TG
     budget_usd: 0,
-    orientation: '',
+    hard_budget_must_within: false,
     bond_acceptance: '',
+    tg_must: false,
+    hard_refuse_bond: false,
+    // C. 培养方式与选拔要求
+    orientation: '',
     interview_portfolio: '',
+    hard_refuse_interview_or_portfolio: false,
+    // D. 课程机会与安全
     want_double_degree: false,
     want_exchange: false,
     safety_importance: '',
     scholarship_importance: '',
-    hard_budget_must_within: false,
-    tg_must: false,
-    hard_refuse_bond: false,
-    hard_refuse_interview_or_portfolio: false,
+    // E. 计算与把关
+    budget_tolerance: '',
+    main_concern: '',
   });
   const [formData, setFormData] = useState<FormData>({
     grade: '',
@@ -248,20 +256,28 @@ const ParentEvalStart = () => {
           user_id: anonymousUserId,
           input: {
             target_country: 'Singapore',
+            // A. 学术与志愿 (Q1-Q3)
             academic_band: sgData.academic_band,
             interests: sgData.interests,
+            reputation_vs_value: sgData.reputation_vs_value, // Q3: 权重调节
+            // B. 预算与TG (Q4-Q7)
             budget_usd: sgData.budget_usd,
-            orientation: sgData.orientation,
-            bond_acceptance: sgData.bond_acceptance,
-            interview_portfolio: sgData.interview_portfolio,
-            want_double_degree: sgData.want_double_degree,
-            want_exchange: sgData.want_exchange,
-            safety_importance: sgData.safety_importance,
-            scholarship_importance: sgData.scholarship_importance,
             hard_budget_must_within: sgData.hard_budget_must_within,
-            tg_must: sgData.tg_must,
-            hard_refuse_bond: sgData.hard_refuse_bond,
-            hard_refuse_interview_or_portfolio: sgData.hard_refuse_interview_or_portfolio,
+            bond_acceptance: sgData.bond_acceptance, // Q5: TG/服务期接受度
+            tg_must: sgData.tg_must, // Q6: 必须可申请TG
+            hard_refuse_bond: sgData.hard_refuse_bond, // Q7: 严格拒绝服务期
+            // C. 培养方式与选拔要求 (Q8-Q10)
+            orientation: sgData.orientation, // Q8: 培养导向
+            interview_portfolio: sgData.interview_portfolio, // Q9: 面试/作品集接受度
+            hard_refuse_interview_or_portfolio: sgData.hard_refuse_interview_or_portfolio, // Q10: 严格拒绝
+            // D. 课程机会与安全 (Q11-Q13)
+            want_double_degree: sgData.want_double_degree, // Q11: 双学位机会
+            want_exchange: sgData.want_exchange, // Q12: 交换机会
+            safety_importance: sgData.safety_importance, // Q13: 安全重要性
+            scholarship_importance: sgData.scholarship_importance, // Q10: 奖学金友好度
+            // E. 计算与把关 (Q14-Q15)
+            budget_tolerance: sgData.budget_tolerance, // Q14: 预算容忍度
+            main_concern: sgData.main_concern, // Q15: 最担心点
           }
         };
       } else {
