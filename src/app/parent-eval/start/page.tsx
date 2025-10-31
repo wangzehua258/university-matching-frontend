@@ -30,19 +30,26 @@ const ParentEvalStart = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  // AU/UK/SG 专用表单数据，单步提交
+  // AU/UK/SG 专用表单数据，单步提交（16题版本）
   const [auData, setAuData] = useState<AUFormData>({
     academic_band: '',
     interests: [],
+    reputation_vs_value: '',
     budget_usd: 0,
+    hard_budget_must_within: false,
+    study_length_preference: '',
+    intake_preference: '',
     wil_preference: '',
-    go8_preference: '',
     psw_importance: '',
-    english_readiness: '',
     city_preferences: [],
     intl_community_importance: '',
+    english_readiness: '',
+    accept_language_course: true,  // 默认接受语言班
     hard_english_required_exclude: false,
-    hard_budget_must_within: false,
+    go8_preference: '',
+    scholarship_importance: '',
+    career_focus: '',
+    main_concern: '',
   });
   const [ukData, setUkData] = useState<UKFormData>({
     academic_band: '',
@@ -170,17 +177,31 @@ const ParentEvalStart = () => {
           user_id: anonymousUserId,
           input: {
             target_country: 'Australia',
+            // A. 学术与专业取向
             academic_band: auData.academic_band,
             interests: auData.interests,
+            reputation_vs_value: auData.reputation_vs_value,
+            // B. 费用与时间
             budget_usd: auData.budget_usd,
+            hard_budget_must_within: auData.hard_budget_must_within,
+            study_length_preference: auData.study_length_preference,
+            intake_preference: auData.intake_preference,
+            // C. 实习与就业
             wil_preference: auData.wil_preference,
-            go8_preference: auData.go8_preference,
             psw_importance: auData.psw_importance,
-            english_readiness: auData.english_readiness,
+            career_focus: auData.career_focus,
+            // D. 城市与社区
             city_preferences: auData.city_preferences,
             intl_community_importance: auData.intl_community_importance,
+            // E. 英语与材料
+            english_readiness: auData.english_readiness,
+            accept_language_course: auData.accept_language_course,
             hard_english_required_exclude: auData.hard_english_required_exclude,
-            hard_budget_must_within: auData.hard_budget_must_within,
+            // F. 学校类型与支持
+            go8_preference: auData.go8_preference,
+            scholarship_importance: auData.scholarship_importance,
+            // G. 期望与顾虑
+            main_concern: auData.main_concern,
           }
         };
       } else if (country === 'United Kingdom') {

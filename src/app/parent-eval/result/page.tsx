@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { evaluationAPI } from '@/lib/api';
 import { GraduationCap, Award, Globe, MapPin, DollarSign } from 'lucide-react';
+import { AUResultView } from './AUResultView';
 
 // Utility functions - moved outside component scope
 const formatTuition = (tuition: number) => {
@@ -35,34 +36,54 @@ interface School {
   tuition: number;
   intlRate: number;
   type: string;
-  schoolSize: string;
+  schoolSize?: string | null;
   strengths: string[];
   tags: string[];
   has_internship_program: boolean;
-  has_research_program: boolean;
-  gptSummary: string;
-  logoUrl: string;
-  acceptanceRate: number;
-  satRange: string;
-  actRange: string;
-  gpaRange: string;
-  applicationDeadline: string;
+  has_research_program?: boolean;
+  gptSummary?: string;
+  logoUrl?: string | null;
+  acceptanceRate?: number | null;
+  satRange?: string | null;
+  actRange?: string | null;
+  gpaRange?: string | null;
+  applicationDeadline?: string;
   website: string;
+  // AU专用字段
+  explanation?: string[];
+  matchScore?: number;
 }
 
 interface EvaluationResult {
   id: string;
   user_id: string;
-  studentProfile: {
+  targetCountry?: string;  // 新增：用于区分国家
+  studentProfile?: {
     type: string;
     description: string;
   };
   recommendedSchools: School[];
-  edSuggestion: School | null;
-  eaSuggestions: School[];
-  rdSuggestions: School[];
-  strategy: string;
-  gptSummary: string;
+  edSuggestion?: School | null;
+  eaSuggestions?: School[];
+  rdSuggestions?: School[];
+  strategy?: string | { plan: string; count: number };
+  gptSummary?: string;
+  // AU专用字段
+  fallbackInfo?: {
+    applied: boolean;
+    steps: string[];
+  };
+  applicationGuidance?: {
+    title: string;
+    steps: string[];
+    keyPoints: string[];
+  };
+  keyInfoSummary?: {
+    budgetRange: string;
+    englishRequirement: string;
+    intakeTiming: string;
+    pswInfo: string;
+  };
   created_at: string;
 }
 
@@ -112,7 +133,7 @@ const ParentEvalResultInner = () => {
             <p className="text-gray-600">暂时未能获取评估结果，请稍后重试或更换条件</p>
           </div>
           <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <p className="text-gray-700 mb-6">{error || '未找到推荐学校'}</p>
+            <p className="text-gray-700 mb-6">{error || '未找到评估结果'}</p>
             <div className="space-x-3">
               <button onClick={() => window.location.href = '/parent-eval/start'} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">重新评估</button>
               <button onClick={() => window.location.href = '/'} className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">返回首页</button>
@@ -123,6 +144,12 @@ const ParentEvalResultInner = () => {
     );
   }
 
+  // 如果是澳洲，使用专用视图
+  if (result.targetCountry === 'Australia') {
+    return <AUResultView result={result as any} />;
+  }
+
+  // 其他国家（USA/UK/SG）使用原有视图
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 py-8">
