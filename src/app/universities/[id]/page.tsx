@@ -22,6 +22,7 @@ import {
   Award
 } from 'lucide-react';
 import { universityAPI } from '@/lib/api';
+import AUDetailView from './AUDetailView';
 
 interface University {
   id: string;
@@ -61,55 +62,111 @@ export default function UniversityDetailPage() {
   const [university, setUniversity] = useState<University | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [auData, setAuData] = useState<any>(null);
 
   useEffect(() => {
     const loadUniversity = async () => {
       try {
         if (params.id) {
           const country = searchParams?.get('country');
+          const universityId = params.id as string;
+          
+          console.log('🔍 加载大学详情:', { id: universityId, country });
+          
           if (country && ['Australia','United Kingdom','Singapore'].includes(country)) {
-            const endpoint = country === 'Australia' ? `/international/au/${params.id}` : country === 'United Kingdom' ? `/international/uk/${params.id}` : `/international/sg/${params.id}`;
+            // 对于国际大学，使用不同的API端点
+            const endpoint = country === 'Australia' 
+              ? `/international/au/${universityId}` 
+              : country === 'United Kingdom' 
+              ? `/international/uk/${universityId}` 
+              : `/international/sg/${universityId}`;
+            
+            console.log('📡 API端点:', endpoint);
+            
             const resp = await api.get(endpoint);
             const u = resp.data as any;
-            const mapped: University = {
-              id: u.id,
-              name: u.name,
-              country: u.country,
-              state: u.city || '',
-              rank: u.rank,
-              tuition: u.tuition_usd || 0,
-              intl_rate: u.intlRate || 0,
-              type: u.currency || 'public',
-              strengths: Array.isArray(u.strengths) ? u.strengths : (typeof u.strengths === 'string' ? u.strengths.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
-              gpt_summary: u.website || '',
-              logo_url: undefined,
-              location: undefined,
-              personality_types: undefined,
-              school_size: undefined,
-              description: undefined,
-              supports_ed: undefined,
-              supports_ea: undefined,
-              supports_rd: undefined,
-              internship_support_score: undefined,
-              acceptance_rate: undefined,
-              sat_range: undefined,
-              act_range: undefined,
-              gpa_range: undefined,
-              application_deadline: undefined,
-              website: u.website,
-              has_internship_program: undefined,
-              has_research_program: undefined,
-              tags: undefined,
-            };
-            setUniversity(mapped);
+            console.log('✅ API响应成功:', u);
+            
+            // 如果是澳大利亚，保存原始数据以便在详情页显示
+            if (country === 'Australia') {
+              setAuData(u);
+              // 仍然映射到通用格式以兼容现有UI
+              const mapped: University = {
+                id: u._id || u.id,
+                name: u.name,
+                country: u.country,
+                state: u.city || '',
+                rank: typeof u.rank === 'number' ? u.rank : Math.round(parseFloat(u.rank) || 999),
+                tuition: u.tuition_usd || 0,
+                intl_rate: u.intlRate || 0,
+                type: u.currency || 'public',
+                strengths: Array.isArray(u.strengths) ? u.strengths : (typeof u.strengths === 'string' ? u.strengths.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
+                gpt_summary: u.website || '',
+                logo_url: undefined,
+                location: undefined,
+                personality_types: undefined,
+                school_size: undefined,
+                description: undefined,
+                supports_ed: undefined,
+                supports_ea: undefined,
+                supports_rd: undefined,
+                internship_support_score: undefined,
+                acceptance_rate: undefined,
+                sat_range: undefined,
+                act_range: undefined,
+                gpa_range: undefined,
+                application_deadline: undefined,
+                website: u.website,
+                has_internship_program: undefined,
+                has_research_program: undefined,
+                tags: Array.isArray(u.tags) ? u.tags : (typeof u.tags === 'string' ? u.tags.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
+              };
+              setUniversity(mapped);
+            } else {
+              // UK和SG的处理逻辑保持不变
+              const mapped: University = {
+                id: u._id || u.id,
+                name: u.name,
+                country: u.country,
+                state: u.city || '',
+                rank: typeof u.rank === 'number' ? u.rank : Math.round(parseFloat(u.rank) || 999),
+                tuition: u.tuition_usd || 0,
+                intl_rate: u.intlRate || 0,
+                type: u.currency || 'public',
+                strengths: Array.isArray(u.strengths) ? u.strengths : (typeof u.strengths === 'string' ? u.strengths.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
+                gpt_summary: u.website || '',
+                logo_url: undefined,
+                location: undefined,
+                personality_types: undefined,
+                school_size: undefined,
+                description: undefined,
+                supports_ed: undefined,
+                supports_ea: undefined,
+                supports_rd: undefined,
+                internship_support_score: undefined,
+                acceptance_rate: undefined,
+                sat_range: undefined,
+                act_range: undefined,
+                gpa_range: undefined,
+                application_deadline: undefined,
+                website: u.website,
+                has_internship_program: undefined,
+                has_research_program: undefined,
+                tags: Array.isArray(u.tags) ? u.tags : (typeof u.tags === 'string' ? u.tags.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
+              };
+              setUniversity(mapped);
+            }
           } else {
-          const data = await universityAPI.getUniversityById(params.id as string);
-          setUniversity(data);
+            const data = await universityAPI.getUniversityById(params.id as string);
+            setUniversity(data);
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         setError('加载大学信息失败');
         console.error('加载大学信息失败:', err);
+        if (err.response) {
+          console.error('API响应:', err.response.data);
+        }
       } finally {
         setLoading(false);
       }
@@ -139,6 +196,20 @@ export default function UniversityDetailPage() {
           </Link>
         </div>
       </div>
+    );
+  }
+
+  // 如果是澳大利亚大学且有详细数据，使用专门的详情页组件
+  const country = searchParams?.get('country');
+  if (country === 'Australia' && auData) {
+    return (
+      <AUDetailView 
+        university={{
+          ...auData,
+          id: auData._id || auData.id,
+        }} 
+        onBack={() => router.push('/universities')} 
+      />
     );
   }
 
