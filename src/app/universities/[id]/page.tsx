@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { universityAPI } from '@/lib/api';
 import AUDetailView from './AUDetailView';
+import SGDetailView from './SGDetailView';
 
 interface University {
   id: string;
@@ -87,8 +88,8 @@ export default function UniversityDetailPage() {
             const u = resp.data as any;
             console.log('✅ API响应成功:', u);
             
-            // 如果是澳大利亚，保存原始数据以便在详情页显示
-            if (country === 'Australia') {
+            // 如果是澳大利亚或新加坡，保存原始数据以便在详情页显示
+            if (country === 'Australia' || country === 'Singapore') {
               setAuData(u);
               // 仍然映射到通用格式以兼容现有UI
               const mapped: University = {
@@ -199,11 +200,23 @@ export default function UniversityDetailPage() {
     );
   }
 
-  // 如果是澳大利亚大学且有详细数据，使用专门的详情页组件
+  // 如果是国际大学且有详细数据，使用专门的详情页组件
   const country = searchParams?.get('country');
   if (country === 'Australia' && auData) {
     return (
       <AUDetailView 
+        university={{
+          ...auData,
+          id: auData._id || auData.id,
+        }} 
+        onBack={() => router.push('/universities')} 
+      />
+    );
+  }
+
+  if (country === 'Singapore' && auData) {
+    return (
+      <SGDetailView 
         university={{
           ...auData,
           id: auData._id || auData.id,
