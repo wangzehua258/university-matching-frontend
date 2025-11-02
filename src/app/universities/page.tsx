@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { Search, Filter, MapPin, Star, DollarSign, Users } from 'lucide-react';
+import { Search, Filter, MapPin, Star, DollarSign, Users, GraduationCap, ArrowRight, Building2, Globe } from 'lucide-react';
 import { universityAPI } from '@/lib/api';
 import { useSearchParams } from 'next/navigation';
 
@@ -234,17 +234,34 @@ function UniversitiesPageInner() {
   }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax, loadUniversities]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Link href="/" className="text-blue-600 hover:text-blue-700">
-                ← 返回首页
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center text-blue-600 hover:text-blue-700 transition-colors">
+                <ArrowRight className="h-4 w-4 mr-1 rotate-180" />
+                <span>返回首页</span>
               </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center">
+                <GraduationCap className="h-8 w-8 text-blue-600" />
+                <h1 className="ml-2 text-2xl font-bold text-gray-900">大学信息库</h1>
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">大学信息库</h1>
+            {searchParams?.get('country') && (
+              <div className="flex items-center space-x-2 px-4 py-2 bg-blue-50 rounded-lg">
+                <Globe className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-700">
+                  {searchParams.get('country') === 'Australia' ? '🇦🇺 澳大利亚' :
+                   searchParams.get('country') === 'United Kingdom' ? '🇬🇧 英国' :
+                   searchParams.get('country') === 'Singapore' ? '🇸🇬 新加坡' :
+                   searchParams.get('country') === 'USA' ? '🇺🇸 美国' :
+                   searchParams.get('country')}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -252,8 +269,8 @@ function UniversitiesPageInner() {
       {/* Search and Filters */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Search */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* 搜索区域 */}
             <div className="md:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -263,7 +280,7 @@ function UniversitiesPageInner() {
                   value={searchTerm}
                   onChange={(e) => handleFilterChange('search', e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -274,7 +291,7 @@ function UniversitiesPageInner() {
                 <select
                   value={selectedCountry}
                   onChange={(e) => handleFilterChange('country', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">所有国家</option>
                   {countries.map((country) => (
@@ -291,7 +308,7 @@ function UniversitiesPageInner() {
               <select
                 value={selectedType}
                 onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">所有类型</option>
                 <option value="private">私立</option>
@@ -301,74 +318,81 @@ function UniversitiesPageInner() {
           </div>
 
           {/* Additional Filters */}
-          <div className="mt-4 flex flex-wrap gap-4 items-center">
-            <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4 text-gray-500" />
-              <span className="text-sm text-gray-600">优势专业筛选:</span>
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+              {/* 优势专业筛选 */}
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">优势专业</label>
+                <select
+                  value={selectedStrength}
+                  onChange={(e) => handleFilterChange('strength', e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                >
+                  <option value="">所有专业</option>
+                  {strengths.map((strength) => (
+                    <option key={strength} value={strength}>
+                      {strength}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* 排名范围筛选 */}
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">排名范围</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    placeholder="最低"
+                    value={rankMin}
+                    onChange={(e) => handleFilterChange('rankMin', e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="1"
+                    max="100"
+                  />
+                  <span className="text-gray-400">-</span>
+                  <input
+                    type="number"
+                    placeholder="最高"
+                    value={rankMax}
+                    onChange={(e) => handleFilterChange('rankMax', e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="1"
+                    max="100"
+                  />
+                </div>
+              </div>
+              
+              {/* 学费范围筛选 */}
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">最高学费 (USD)</label>
+                <input
+                  type="number"
+                  placeholder="输入金额"
+                  value={tuitionMax}
+                  onChange={(e) => handleFilterChange('tuitionMax', e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  min="0"
+                  step="1000"
+                />
+              </div>
+              
+              {/* 操作按钮 */}
+              <div className="flex items-end space-x-2 lg:col-span-2">
+                <button
+                  onClick={handleSearch}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  应用筛选
+                </button>
+                <button
+                  onClick={clearFilters}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  清除
+                </button>
+              </div>
             </div>
-            <select
-              value={selectedStrength}
-              onChange={(e) => handleFilterChange('strength', e.target.value)}
-              className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">所有专业</option>
-              {strengths.map((strength) => (
-                <option key={strength} value={strength}>
-                  {strength}
-                </option>
-              ))}
-            </select>
-            
-            {/* 排名范围筛选 */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">排名:</span>
-              <input
-                type="number"
-                placeholder="最低"
-                value={rankMin}
-                onChange={(e) => handleFilterChange('rankMin', e.target.value)}
-                className="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                min="1"
-                max="100"
-              />
-              <span className="text-sm text-gray-500">-</span>
-              <input
-                type="number"
-                placeholder="最高"
-                value={rankMax}
-                onChange={(e) => handleFilterChange('rankMax', e.target.value)}
-                className="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                min="1"
-                max="100"
-              />
-            </div>
-            
-            {/* 学费范围筛选 */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">最高学费:</span>
-              <input
-                type="number"
-                placeholder="美元"
-                value={tuitionMax}
-                onChange={(e) => handleFilterChange('tuitionMax', e.target.value)}
-                className="w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                min="0"
-                step="1000"
-              />
-            </div>
-            
-            <button
-              onClick={handleSearch}
-              className="px-4 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
-            >
-              搜索
-            </button>
-            <button
-              onClick={clearFilters}
-              className="px-4 py-1 border border-gray-300 text-gray-600 text-sm rounded-md hover:bg-gray-50"
-            >
-              清除筛选
-            </button>
           </div>
         </div>
       </div>
@@ -376,78 +400,98 @@ function UniversitiesPageInner() {
       {/* Universities List */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">加载中...</p>
+          <div className="text-center py-20">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto"></div>
+              <GraduationCap className="h-8 w-8 text-blue-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            </div>
+            <p className="mt-6 text-gray-600 font-medium">正在加载大学数据...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {universities.map((university) => (
               <div
                 key={university.id}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+                className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-gray-200"
               >
                 <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {university.name}
-                      </h3>
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {university.state}, {university.country}
+                  {/* 头部：名称和排名 */}
+                  <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Building2 className="h-5 w-5 text-blue-600" />
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {university.name}
+                        </h3>
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <MapPin className="h-4 w-4 mr-1 text-gray-400" />
+                        <span>{university.state}, {university.country}</span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 text-yellow-400" />
-                      <span className="text-sm font-medium text-gray-900">
+                    <div className="flex flex-col items-center px-2">
+                      <Star className="h-4 w-4 text-yellow-500 fill-current mb-1" />
+                      <span className="text-sm font-bold text-gray-900">
                         #{university.rank}
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <DollarSign className="h-4 w-4 mr-2" />
-                      <span>学费: ${university.tuition.toLocaleString()}/年</span>
+                  {/* 核心信息 */}
+                  <div className="space-y-2.5 mb-4">
+                    <div className="flex items-center text-sm text-gray-700">
+                      <DollarSign className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>学费: <span className="font-semibold text-gray-900">${university.tuition.toLocaleString()}/年</span></span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Users className="h-4 w-4 mr-2" />
-                      <span>国际生比例: {(university.intl_rate * 100).toFixed(1)}%</span>
+                    <div className="flex items-center text-sm text-gray-700">
+                      <Users className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>国际生比例: <span className="font-semibold text-gray-900">{(university.intl_rate * 100).toFixed(1)}%</span></span>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      <span className="font-medium">类型:</span> {university.type === 'private' ? '私立' : '公立'}
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="text-sm text-gray-600 mb-2">
-                      <span className="font-medium">优势专业:</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-1">
-                      {university.strengths.map((strength, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full text-center truncate"
-                          title={strength}
-                        >
-                          {strength}
-                        </span>
-                      ))}
+                    <div className="flex items-center text-sm text-gray-700">
+                      <GraduationCap className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>类型: <span className="font-semibold text-gray-900">{university.type === 'private' ? '私立' : '公立'}</span></span>
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-                    {university.gpt_summary}
-                  </p>
+                  {/* 优势专业 */}
+                  {university.strengths && university.strengths.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-xs font-medium text-gray-500 mb-2">优势专业</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {university.strengths.slice(0, 6).map((strength, index) => (
+                          <span
+                            key={index}
+                            className="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
+                            title={strength}
+                          >
+                            {strength}
+                          </span>
+                        ))}
+                        {university.strengths.length > 6 && (
+                          <span className="px-2.5 py-1 bg-gray-100 text-gray-500 text-xs rounded-md">
+                            +{university.strengths.length - 6}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
+                  {/* 描述 */}
+                  {university.gpt_summary && (
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 min-h-[2.5rem]">
+                      {university.gpt_summary}
+                    </p>
+                  )}
+
+                  {/* 查看详情按钮 */}
                   <Link
                     href={(selectedCountry || searchParams?.get('country')) && ['Australia','United Kingdom','Singapore'].includes(selectedCountry || searchParams?.get('country') || '')
                       ? `/universities/${university.id}?country=${encodeURIComponent(selectedCountry || searchParams?.get('country') || '')}`
                       : `/universities/${university.id}`}
-                    className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                    className="flex items-center justify-center w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors group"
                   >
-                    查看详情
+                    <span>查看详情</span>
+                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
               </div>
@@ -456,78 +500,89 @@ function UniversitiesPageInner() {
         )}
 
         {!loading && universities.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600">没有找到符合条件的大学</p>
+          <div className="text-center py-20 bg-white rounded-xl shadow-lg border border-gray-200">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+              <Search className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">没有找到符合条件的大学</h3>
+            <p className="text-gray-600 mb-6">请尝试调整筛选条件或搜索关键词</p>
+            <button
+              onClick={clearFilters}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              清除所有筛选
+            </button>
           </div>
         )}
 
         {/* 分页组件 */}
         {!loading && universities.length > 0 && totalPages > 1 && (
-          <div className="mt-8 flex justify-center">
-            <div className="flex items-center space-x-2">
-              {/* 上一页按钮 */}
-              <button
-                onClick={handlePrevPage}
-                disabled={!hasPrev}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  hasPrev
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                上一页
-              </button>
-
-              {/* 页码按钮 */}
-              <div className="flex space-x-1">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = currentPage - 2 + i;
-                  }
-
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`px-3 py-2 rounded-md text-sm font-medium ${
-                        currentPage === pageNum
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
+          <div className="mt-8">
+            <div className="flex flex-col items-center space-y-4">
+              {/* 分页信息 */}
+              <div className="text-sm text-gray-600">
+                显示第 <span className="font-medium text-gray-900">{currentPage}</span> 页，共 <span className="font-medium text-gray-900">{totalPages}</span> 页，总计 <span className="font-medium text-gray-900">{totalUniversities}</span> 所大学
               </div>
+              
+              {/* 分页按钮 */}
+              <div className="flex items-center space-x-2">
+                {/* 上一页按钮 */}
+                <button
+                  onClick={handlePrevPage}
+                  disabled={!hasPrev}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    hasPrev
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  上一页
+                </button>
 
-              {/* 下一页按钮 */}
-              <button
-                onClick={handleNextPage}
-                disabled={!hasNext}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  hasNext
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                下一页
-              </button>
+                {/* 页码按钮 */}
+                <div className="flex space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`w-9 h-9 rounded-md text-sm font-medium transition-colors ${
+                          currentPage === pageNum
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* 下一页按钮 */}
+                <button
+                  onClick={handleNextPage}
+                  disabled={!hasNext}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    hasNext
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  下一页
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-
-        {/* 分页信息 */}
-        {!loading && universities.length > 0 && (
-          <div className="mt-4 text-center text-sm text-gray-600">
-            显示第 {currentPage} 页，共 {totalPages} 页，总计 {totalUniversities} 所大学
           </div>
         )}
       </div>
