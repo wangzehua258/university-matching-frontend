@@ -289,6 +289,15 @@ export default function UniversityDetailPage() {
 
   // 如果是国际大学且有详细数据，使用专门的详情页组件
   const country = searchParams?.get('country');
+  
+  // 构建返回链接，根据国家返回对应的大学列表
+  const getBackUrl = (countryParam: string | null) => {
+    if (countryParam) {
+      return `/universities?country=${encodeURIComponent(countryParam)}`;
+    }
+    return '/universities';
+  };
+  
   if (country === 'Australia' && auData) {
     const au = auData as AUUniversityResponse;
     return (
@@ -299,7 +308,7 @@ export default function UniversityDetailPage() {
           strengths: normalizeArray(au.strengths),
           tags: normalizeArray(au.tags),
         }} 
-        onBack={() => router.push('/universities')} 
+        onBack={() => router.push(getBackUrl(country))} 
       />
     );
   }
@@ -314,7 +323,7 @@ export default function UniversityDetailPage() {
           strengths: normalizeArray(sg.strengths),
           tags: normalizeArray(sg.tags),
         }} 
-        onBack={() => router.push('/universities')} 
+        onBack={() => router.push(getBackUrl(country))} 
       />
     );
   }
@@ -329,10 +338,28 @@ export default function UniversityDetailPage() {
           strengths: normalizeArray(uk.strengths),
           tags: normalizeArray(uk.tags),
         }} 
-        onBack={() => router.push('/universities')} 
+        onBack={() => router.push(getBackUrl(country))} 
       />
     );
   }
+
+  // 对于通用视图（主要是USA），也需要根据country参数或university.country构建返回链接
+  const getBackUrlForGeneric = () => {
+    const urlCountry = searchParams?.get('country');
+    if (urlCountry) {
+      return `/universities?country=${encodeURIComponent(urlCountry)}`;
+    }
+    if (university?.country) {
+      // 处理国家名称映射
+      const countryMap: Record<string, string> = {
+        'United States': 'USA',
+        'USA': 'USA',
+      };
+      const mappedCountry = countryMap[university.country] || university.country;
+      return `/universities?country=${encodeURIComponent(mappedCountry)}`;
+    }
+    return '/universities';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -342,7 +369,7 @@ export default function UniversityDetailPage() {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
               <Link 
-                href="/universities" 
+                href={getBackUrlForGeneric()}
                 className="flex items-center text-blue-600 hover:text-blue-700"
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
