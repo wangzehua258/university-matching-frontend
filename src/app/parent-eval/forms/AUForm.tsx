@@ -57,8 +57,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
   return (
     <div className="space-y-6">
       {/* A. 学术与专业取向 */}
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">A. 学术与专业取向</h3>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">A</span>
+          学术与专业取向
+        </h3>
         
         {/* Q1 学术水平 */}
         <div className="mb-4">
@@ -119,8 +122,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
       </div>
 
       {/* B. 费用与时间 */}
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">B. 费用与时间</h3>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">B</span>
+          费用与时间
+        </h3>
         
         {/* Q4 预算 */}
         <div className="mb-4">
@@ -183,8 +189,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
       </div>
 
       {/* C. 实习与就业 */}
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">C. 实习与就业</h3>
+      <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-6 border border-purple-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">C</span>
+          实习与就业
+        </h3>
         
         {/* Q5 WIL */}
         <div className="mb-4">
@@ -242,8 +251,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
       </div>
 
       {/* D. 城市与社区 */}
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">D. 城市与社区</h3>
+      <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-6 border border-orange-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">D</span>
+          城市与社区
+        </h3>
         
         {/* Q9 城市偏好 */}
         <div className="mb-4">
@@ -284,8 +296,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
       </div>
 
       {/* E. 英语与材料 */}
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">E. 英语与材料</h3>
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-6 border border-indigo-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">E</span>
+          英语与材料
+        </h3>
         
         {/* Q13 英语准备度 */}
         <div className="mb-4">
@@ -328,8 +343,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
       </div>
 
       {/* F. 学校类型与支持 */}
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">F. 学校类型与支持</h3>
+      <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg p-6 border border-pink-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-pink-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">F</span>
+          学校类型与支持
+        </h3>
         
         {/* Q6 Go8 */}
         <div className="mb-4">
@@ -367,8 +385,11 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
       </div>
 
       {/* G. 期望与顾虑 */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">G. 期望与顾虑</h3>
+      <div className="bg-gradient-to-r from-cyan-50 to-teal-50 rounded-lg p-6 border border-cyan-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-cyan-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">G</span>
+          期望与顾虑
+        </h3>
         
         {/* Q16 最担心点（用于解释排序，不单独计分） */}
         <div className="mb-4">

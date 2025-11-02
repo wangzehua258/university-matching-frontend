@@ -3,7 +3,8 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, GraduationCap, ArrowLeft, Users } from 'lucide-react';
+import Link from 'next/link';
 import { evaluationAPI } from '@/lib/api';
 import { getAnonymousUserId } from '@/lib/useAnonymousUser';
 import { AUForm, AUFormData } from '../forms/AUForm';
@@ -594,68 +595,119 @@ const ParentEvalStart = () => {
     }
   };
 
+  // 获取当前国家名称用于显示
+  const countryName = searchParams?.get('country') === 'Australia' ? '澳大利亚' :
+                      searchParams?.get('country') === 'United Kingdom' ? '英国' :
+                      searchParams?.get('country') === 'Singapore' ? '新加坡' :
+                      searchParams?.get('country') === 'USA' ? '美国' : '';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <GraduationCap className="h-8 w-8 text-blue-600" />
+              <h1 className="ml-2 text-xl font-bold text-gray-900">
+                全球大学智能匹配系统
+              </h1>
+            </div>
+            <Link
+              href="/parent-eval/select"
+              className="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              返回选择
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Hero Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">家长版个性化择校评估</h1>
-          <p className="text-gray-600">请填写以下信息，我们将为您生成个性化的择校建议</p>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+            <Users className="h-8 w-8 text-green-600" />
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+            {countryName ? `${countryName}家长版评估` : '家长版个性化择校评估'}
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {countryName ? `请根据实际情况填写以下信息，我们将为您生成个性化的${countryName}大学推荐报告` : '请填写以下信息，我们将为您生成个性化的择校建议'}
+          </p>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">步骤 {currentStep} / 3</span>
-            <span className="text-sm text-gray-500">完成度 {Math.round((currentStep / 3) * 100)}%</span>
+        {/* Progress Bar - 只在多步骤表单显示 */}
+        {!searchParams?.get('country') || searchParams?.get('country') === 'USA' ? (
+          <div className="mb-8 bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">步骤 {currentStep} / 3</span>
+              <span className="text-sm text-gray-500">完成度 {Math.round((currentStep / 3) * 100)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div
+                className="bg-gradient-to-r from-blue-600 to-purple-600 h-3 rounded-full transition-all duration-300 shadow-sm"
+                style={{ width: `${(currentStep / 3) * 100}%` }}
+              ></div>
+            </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / 3) * 100}%` }}
-            ></div>
+        ) : null}
+
+        {/* Form Card */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="p-8">
+            {renderCurrentStep()}
+
+            {/* Navigation - 只在多步骤表单显示 */}
+            {(!searchParams?.get('country') || searchParams?.get('country') === 'USA') && (
+              <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  disabled={currentStep === 1}
+                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                    currentStep === 1
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  <ArrowLeft className="h-4 w-4 inline mr-2" />
+                  上一步
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={loading}
+                  className={`px-8 py-3 rounded-lg font-medium flex items-center space-x-2 transition-all transform hover:scale-105 ${
+                    loading
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl'
+                  }`}
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>生成中...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{currentStep === 3 ? '生成评估报告' : '下一步'}</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Form */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          {renderCurrentStep()}
-
-          {/* Navigation */}
-          <div className="flex justify-between mt-8">
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className={`px-6 py-2 rounded-md font-medium ${
-                currentStep === 1
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-600 text-white hover:bg-gray-700'
-              }`}
-            >
-              上一步
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={loading}
-              className={`px-6 py-2 rounded-md font-medium flex items-center space-x-2 ${
-                loading
-                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>生成中...</span>
-                </>
-              ) : (
-                <>
-                  <span>{currentStep === 3 ? '生成评估报告' : '下一步'}</span>
-                  <ChevronRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </div>
+        {/* Help Section */}
+        <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-200">
+          <h3 className="text-sm font-semibold text-blue-900 mb-2">💡 填写提示</h3>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li>• 请根据实际情况如实填写，这样我们才能为您提供最准确的推荐</li>
+            <li>• 如果不确定某些信息，可以先填写大概范围，系统会根据您的选择进行调整</li>
+            <li>• 所有信息仅用于评估，我们严格保护您的隐私安全</li>
+          </ul>
         </div>
       </div>
     </div>

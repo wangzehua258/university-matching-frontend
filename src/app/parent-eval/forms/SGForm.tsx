@@ -53,8 +53,11 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
   return (
     <div className="space-y-6">
       {/* A. 学术与志愿 */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">A. 学术与志愿</h3>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">A</span>
+          学术与志愿
+        </h3>
         
         {/* Q1: 学术水平 */}
         <div className="mb-4">
@@ -113,8 +116,11 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
       </div>
 
       {/* B. 预算与TG */}
-      <div className="bg-green-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">B. 预算与TG（学费资助）</h3>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">B</span>
+          预算与TG（学费资助）
+        </h3>
         
         {/* Q4: 预算 */}
         <div className="mb-4">
@@ -179,8 +185,11 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
       </div>
 
       {/* C. 培养方式与选拔要求 */}
-      <div className="bg-purple-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">C. 培养方式与选拔要求</h3>
+      <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-6 border border-purple-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">C</span>
+          培养方式与选拔要求
+        </h3>
         
         {/* Q8: 培养导向 */}
         <div className="mb-4">
@@ -229,8 +238,11 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
       </div>
 
       {/* D. 课程机会与安全 */}
-      <div className="bg-yellow-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">D. 课程机会与安全</h3>
+      <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-6 border border-yellow-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">D</span>
+          课程机会与安全
+        </h3>
         
         {/* Q11: 双学位 */}
         <div className="mb-4">
@@ -290,8 +302,11 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
       </div>
 
       {/* E. 计算与把关 */}
-      <div className="bg-orange-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">E. 计算与把关</h3>
+      <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-6 border border-orange-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">E</span>
+          计算与把关
+        </h3>
         
         {/* Q14: 预算容忍度 */}
         <div className="mb-4">

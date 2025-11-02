@@ -52,8 +52,11 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
   return (
     <div className="space-y-6">
       {/* A. 学术与志愿 */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">A. 学术与志愿</h3>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">A</span>
+          学术与志愿
+        </h3>
         
         {/* Q1: 学术水平 */}
         <div className="mb-4">
@@ -112,8 +115,11 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
       </div>
 
       {/* B. 费用与兜底 */}
-      <div className="bg-green-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">B. 费用与兜底</h3>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">B</span>
+          费用与兜底
+        </h3>
         
         {/* Q4: 预算 */}
         <div className="mb-4">
@@ -156,8 +162,11 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
       </div>
 
       {/* C. UCAS路线与准备度 */}
-      <div className="bg-purple-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">C. UCAS 路线与准备度</h3>
+      <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-6 border border-purple-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">C</span>
+          UCAS路线与准备度
+        </h3>
         
         {/* Q6: UCAS路线 */}
         <div className="mb-4">
@@ -220,8 +229,11 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
       </div>
 
       {/* D. 学校类型与地区 */}
-      <div className="bg-yellow-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">D. 学校类型与地区</h3>
+      <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-6 border border-yellow-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">D</span>
+          学校类型与地区
+        </h3>
         
         {/* Q9: 罗素集团 */}
         <div className="mb-4">
@@ -273,8 +285,11 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
       </div>
 
       {/* E. 节奏与确定性 */}
-      <div className="bg-orange-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-4">E. 节奏与确定性</h3>
+      <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-6 border border-orange-100 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">E</span>
+          节奏与确定性
+        </h3>
         
         {/* Q12: 入学批次 */}
         <div className="mb-4">
