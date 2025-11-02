@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import axios from 'axios';
 import { api } from '@/lib/api';
 import Link from 'next/link';
 import { 
@@ -15,9 +14,7 @@ import {
   Calendar, 
   BookOpen, 
   Briefcase, 
-  GraduationCap,
   Globe,
-  Clock,
   Target,
   Award
 } from 'lucide-react';
@@ -57,6 +54,92 @@ interface University {
   tags?: string[];
 }
 
+interface AUUniversityResponse {
+  _id?: string;
+  id?: string;
+  name: string;
+  country: string;
+  city: string;
+  rank: number;
+  tuition_local: number;
+  currency: string;
+  tuition_usd: number;
+  study_length_years: number;
+  intakes: string;
+  english_requirements: string;
+  requires_english_test: boolean;
+  group_of_eight: boolean;
+  work_integrated_learning: boolean;
+  placement_rate?: number | null;
+  post_study_visa_years: number;
+  scholarship_available: boolean;
+  strengths: string[] | string;
+  tags: string[] | string;
+  intlRate: number;
+  website: string;
+}
+
+interface UKUniversityResponse {
+  _id?: string;
+  id?: string;
+  name: string;
+  country: string;
+  city: string;
+  rank: number;
+  tuition_local: number;
+  currency: string;
+  tuition_usd: number;
+  study_length_years: number;
+  ucas_deadline_type: string;
+  typical_offer_alevel: string;
+  typical_offer_ib: string;
+  foundation_available: boolean;
+  russell_group: boolean;
+  placement_year_available: boolean;
+  interview_required: boolean;
+  admissions_tests: string;
+  personal_statement_weight: number;
+  strengths: string[] | string;
+  tags: string[] | string;
+  intlRate: number | null;
+  website: string;
+  scholarship_available: boolean;
+}
+
+interface SGUniversityResponse {
+  _id?: string;
+  id?: string;
+  name: string;
+  country: string;
+  city: string;
+  rank: number;
+  tuition_local: number;
+  currency: string;
+  tuition_usd: number;
+  study_length_years: number;
+  tuition_grant_available: boolean;
+  tuition_grant_bond_years?: number | null;
+  interview_required: boolean;
+  essay_or_portfolio_required: boolean;
+  coop_or_internship_required: boolean;
+  industry_links_score: number;
+  exchange_opportunities_score?: number | null;
+  strengths: string[] | string;
+  tags: string[] | string;
+  intlRate: number;
+  website: string;
+  scholarship_available: boolean;
+}
+
+type InternationalUniversityResponse = AUUniversityResponse | UKUniversityResponse | SGUniversityResponse;
+
+// 辅助函数：将字符串或数组转换为字符串数组
+function normalizeArray(value: string | string[] | undefined): string[] {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') return value.split(',').map(s => s.trim()).filter(Boolean);
+  return [];
+}
+
 export default function UniversityDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -64,7 +147,7 @@ export default function UniversityDetailPage() {
   const [university, setUniversity] = useState<University | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [auData, setAuData] = useState<any>(null);
+  const [auData, setAuData] = useState<InternationalUniversityResponse | null>(null);
 
   useEffect(() => {
     const loadUniversity = async () => {
@@ -86,7 +169,7 @@ export default function UniversityDetailPage() {
             console.log('📡 API端点:', endpoint);
             
             const resp = await api.get(endpoint);
-            const u = resp.data as any;
+            const u = resp.data as InternationalUniversityResponse;
             console.log('✅ API响应成功:', u);
             
             // 如果是国际大学（澳大利亚、新加坡、英国），保存原始数据以便在详情页显示
@@ -94,7 +177,7 @@ export default function UniversityDetailPage() {
               setAuData(u);
               // 仍然映射到通用格式以兼容现有UI
               const mapped: University = {
-                id: u._id || u.id,
+                id: u._id || u.id || '',
                 name: u.name,
                 country: u.country,
                 state: u.city || '',
@@ -127,7 +210,7 @@ export default function UniversityDetailPage() {
             } else {
               // UK和SG的处理逻辑保持不变
               const mapped: University = {
-                id: u._id || u.id,
+                id: u._id || u.id || '',
                 name: u.name,
                 country: u.country,
                 state: u.city || '',
@@ -163,11 +246,14 @@ export default function UniversityDetailPage() {
             setUniversity(data);
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError('加载大学信息失败');
         console.error('加载大学信息失败:', err);
-        if (err.response) {
-          console.error('API响应:', err.response.data);
+        if (err && typeof err === 'object' && 'response' in err) {
+          const axiosError = err as { response?: { data?: unknown } };
+          if (axiosError.response) {
+            console.error('API响应:', axiosError.response.data);
+          }
         }
       } finally {
         setLoading(false);
@@ -204,11 +290,14 @@ export default function UniversityDetailPage() {
   // 如果是国际大学且有详细数据，使用专门的详情页组件
   const country = searchParams?.get('country');
   if (country === 'Australia' && auData) {
+    const au = auData as AUUniversityResponse;
     return (
       <AUDetailView 
         university={{
-          ...auData,
-          id: auData._id || auData.id,
+          ...au,
+          id: au._id || au.id || '',
+          strengths: normalizeArray(au.strengths),
+          tags: normalizeArray(au.tags),
         }} 
         onBack={() => router.push('/universities')} 
       />
@@ -216,11 +305,14 @@ export default function UniversityDetailPage() {
   }
 
   if (country === 'Singapore' && auData) {
+    const sg = auData as SGUniversityResponse;
     return (
       <SGDetailView 
         university={{
-          ...auData,
-          id: auData._id || auData.id,
+          ...sg,
+          id: sg._id || sg.id || '',
+          strengths: normalizeArray(sg.strengths),
+          tags: normalizeArray(sg.tags),
         }} 
         onBack={() => router.push('/universities')} 
       />
@@ -228,11 +320,14 @@ export default function UniversityDetailPage() {
   }
 
   if (country === 'United Kingdom' && auData) {
+    const uk = auData as UKUniversityResponse;
     return (
       <UKDetailView 
         university={{
-          ...auData,
-          id: auData._id || auData.id,
+          ...uk,
+          id: uk._id || uk.id || '',
+          strengths: normalizeArray(uk.strengths),
+          tags: normalizeArray(uk.tags),
         }} 
         onBack={() => router.push('/universities')} 
       />

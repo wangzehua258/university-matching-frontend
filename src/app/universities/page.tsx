@@ -3,9 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, MapPin, Star, DollarSign, Users } from 'lucide-react';
-import { universityAPI, api } from '@/lib/api';
+import { universityAPI } from '@/lib/api';
 import { useSearchParams } from 'next/navigation';
-import axios from 'axios';
 
 interface University {
   id: string;
@@ -204,7 +203,7 @@ export default function UniversitiesPage() {
     }, 300); // 300ms防抖
 
     return () => clearTimeout(timer);
-  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax]);
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax, loadUniversities]);
 
   return (
     <div className="min-h-screen bg-gray-50">
