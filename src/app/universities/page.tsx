@@ -29,7 +29,14 @@ function UniversitiesPageInner() {
   const [universities, setUniversities] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
+  // 直接从URL参数初始化selectedCountry，避免先加载错误数据
+  const [selectedCountry, setSelectedCountry] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('country') || '';
+    }
+    return searchParams?.get('country') || '';
+  });
   const [selectedType, setSelectedType] = useState('');
   const [countries, setCountries] = useState<string[]>([]);
   const [strengths, setStrengths] = useState<string[]>([]);
@@ -50,12 +57,14 @@ function UniversitiesPageInner() {
   const loadUniversities = useCallback(async () => {
     try {
       // Always call unified paginated endpoint with country param
+      // 优先使用URL参数中的country，如果没有则使用selectedCountry状态
+      const countryFromUrl = searchParams?.get('country') || selectedCountry;
       const params: Record<string, string | number> = {
         page: currentPage,
         page_size: 9  // 每页9所学校
       };
       if (searchTerm) params.search = searchTerm;
-      if (selectedCountry) params.country = selectedCountry;
+      if (countryFromUrl) params.country = countryFromUrl;
       if (selectedType) params.type = selectedType;
       if (selectedStrength) params.strength = selectedStrength;
       if (rankMin) params.rank_min = parseInt(rankMin);
@@ -76,12 +85,13 @@ function UniversitiesPageInner() {
       console.error('加载大学数据失败:', error);
       // 如果分页API失败，回退到普通API
       try {
+        const countryFromUrl = searchParams?.get('country') || selectedCountry;
         const fallbackParams: Record<string, string | number> = {
           page: currentPage,
           page_size: 9
         };
         if (searchTerm) fallbackParams.search = searchTerm;
-        if (selectedCountry) fallbackParams.country = selectedCountry;
+        if (countryFromUrl) fallbackParams.country = countryFromUrl;
         if (selectedType) fallbackParams.type = selectedType;
         if (selectedStrength) fallbackParams.strength = selectedStrength;
         if (rankMin) fallbackParams.rank_min = parseInt(rankMin);
@@ -102,20 +112,24 @@ function UniversitiesPageInner() {
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax]);
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax, searchParams]);
 
   useEffect(() => {
     loadUniversities();
     loadFilters();
   }, [loadUniversities]);
 
-  // Initialize selected country from query
+  // 同步URL参数到状态（当URL变化时更新状态）
   useEffect(() => {
-    const initial = searchParams?.get('country') || '';
-    if (initial) {
-      setSelectedCountry(initial);
+    const countryFromUrl = searchParams?.get('country') || '';
+    if (countryFromUrl && countryFromUrl !== selectedCountry) {
+      setSelectedCountry(countryFromUrl);
+      setCurrentPage(1); // 切换国家时重置到第一页
+    } else if (!countryFromUrl && selectedCountry) {
+      // 如果URL中没有country参数，但状态中有，则清空状态（除非是用户手动选择的筛选）
+      // 这里保持selectedCountry，因为可能是用户在页面上选择的筛选
     }
-  }, [searchParams]);
+  }, [searchParams, selectedCountry]);
 
   const loadFilters = async () => {
     try {
@@ -196,14 +210,18 @@ function UniversitiesPageInner() {
     }
   };
 
-  // 使用useEffect实现实时筛选
+  // 使用useEffect实现实时筛选（用于搜索和筛选变化时的防抖）
+  // loadUniversities已经在useCallback中依赖了所有必要的值，包括searchParams
+  // 这个effect主要用于搜索框输入时的防抖
   useEffect(() => {
-    const timer = setTimeout(() => {
-      loadUniversities();
-    }, 300); // 300ms防抖
-
-    return () => clearTimeout(timer);
-  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax, loadUniversities]);
+    if (searchTerm) {
+      // 只有在搜索时使用防抖
+      const timer = setTimeout(() => {
+        loadUniversities();
+      }, 300); // 300ms防抖
+      return () => clearTimeout(timer);
+    }
+  }, [searchTerm, loadUniversities]);
 
   return (
     <div className="min-h-screen bg-gray-50">
