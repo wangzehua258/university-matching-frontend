@@ -22,6 +22,7 @@ import { universityAPI } from '@/lib/api';
 import AUDetailView from './AUDetailView';
 import SGDetailView from './SGDetailView';
 import UKDetailView from './UKDetailView';
+import USDetailView from './USDetailView';
 
 interface University {
   id: string;
@@ -339,6 +340,58 @@ export default function UniversityDetailPage() {
           tags: normalizeArray(uk.tags),
         }} 
         onBack={() => router.push(getBackUrl(country))} 
+      />
+    );
+  }
+
+  // 对于美国大学，使用专门的详情页组件
+  const isUSA = country === 'USA' || country === 'United States' || 
+                university?.country === 'USA' || university?.country === 'United States';
+  
+  if (isUSA && university) {
+    return (
+      <USDetailView 
+        university={{
+          id: university.id,
+          name: university.name,
+          country: university.country,
+          state: university.state,
+          rank: university.rank,
+          tuition: university.tuition,
+          intl_rate: university.intl_rate,
+          type: university.type,
+          strengths: university.strengths || [],
+          gpt_summary: university.gpt_summary || '',
+          supports_ed: university.supports_ed,
+          supports_ea: university.supports_ea,
+          supports_rd: university.supports_rd,
+          acceptance_rate: university.acceptance_rate,
+          sat_range: university.sat_range,
+          act_range: university.act_range,
+          gpa_range: university.gpa_range,
+          application_deadline: university.application_deadline,
+          website: university.website,
+          has_internship_program: university.has_internship_program,
+          has_research_program: university.has_research_program,
+          internship_support_score: university.internship_support_score,
+          tags: university.tags || [],
+          school_size: university.school_size,
+        }} 
+        onBack={() => {
+          const urlCountry = searchParams?.get('country');
+          if (urlCountry) {
+            router.push(`/universities?country=${encodeURIComponent(urlCountry)}`);
+          } else if (university.country) {
+            const countryMap: Record<string, string> = {
+              'United States': 'USA',
+              'USA': 'USA',
+            };
+            const mappedCountry = countryMap[university.country] || university.country;
+            router.push(`/universities?country=${encodeURIComponent(mappedCountry)}`);
+          } else {
+            router.push('/universities');
+          }
+        }} 
       />
     );
   }
