@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MapPin, DollarSign, GraduationCap, Briefcase, Globe, Clock, FileText, AlertCircle, Award, Building2 } from 'lucide-react';
+import { MapPin, DollarSign, GraduationCap, Clock, FileText, AlertCircle, Award, Building2 } from 'lucide-react';
 
 interface SGSchool {
   id: string;

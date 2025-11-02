@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MapPin, DollarSign, GraduationCap, Briefcase, Globe, Clock, FileText, AlertCircle, BookOpen } from 'lucide-react';
+import { MapPin, DollarSign, GraduationCap, Briefcase, Clock, FileText, AlertCircle, BookOpen } from 'lucide-react';
 
 interface UKSchool {
   id: string;

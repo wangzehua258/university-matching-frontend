@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { evaluationAPI } from '@/lib/api';
 import { GraduationCap, Award, Globe, MapPin, DollarSign } from 'lucide-react';
 import { AUResultView } from './AUResultView';
@@ -13,7 +14,8 @@ const formatTuition = (tuition: number) => {
   return `$${(tuition / 1000).toFixed(0)}k`;
 };
 
-const getSchoolSizeText = (size: string) => {
+const getSchoolSizeText = (size: string | null | undefined) => {
+  if (!size) return '未知';
   const sizeMap: { [key: string]: string } = {
     'small': '小型',
     'medium': '中型',
@@ -52,8 +54,8 @@ interface School {
   applicationDeadline?: string;
   website: string;
   // AU专用字段
-  explanation?: string[];
-  matchScore?: number;
+  explanation?: string[] | null;
+  matchScore?: number | null;
 }
 
 interface EvaluationResult {
@@ -148,17 +150,26 @@ const ParentEvalResultInner = () => {
 
   // 如果是澳洲，使用专用视图
   if (result.targetCountry === 'Australia') {
-    return <AUResultView result={result as any} />;
+    // 类型转换，确保字段匹配
+    const auResult = {
+      ...result,
+      recommendedSchools: result.recommendedSchools.map(school => ({
+        ...school,
+        explanation: school.explanation || [],
+        matchScore: school.matchScore || 0,
+      })),
+    };
+    return <AUResultView result={auResult as unknown as Parameters<typeof AUResultView>[0]['result']} />;
   }
 
   // 如果是英国，使用专用视图
   if (result.targetCountry === 'United Kingdom') {
-    return <UKResultView result={result as any} />;
+    return <UKResultView result={result as unknown as Parameters<typeof UKResultView>[0]['result']} />;
   }
 
   // 如果是新加坡，使用专用视图
   if (result.targetCountry === 'Singapore') {
-    return <SGResultView result={result as any} />;
+    return <SGResultView result={result as unknown as Parameters<typeof SGResultView>[0]['result']} />;
   }
 
   // 其他国家（USA）使用原有视图
@@ -231,7 +242,7 @@ const ParentEvalResultInner = () => {
             )}
 
             {/* EA建议 */}
-            {result.eaSuggestions.length > 0 && (
+            {result.eaSuggestions && result.eaSuggestions.length > 0 && (
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="bg-orange-100 text-orange-800 text-sm font-medium px-3 py-1 rounded-full mr-3">
@@ -248,7 +259,7 @@ const ParentEvalResultInner = () => {
             )}
 
             {/* RD建议 */}
-            {result.rdSuggestions.length > 0 && (
+            {result.rdSuggestions && result.rdSuggestions.length > 0 && (
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mr-3">
@@ -301,7 +312,7 @@ const SchoolCard = ({ school }: { school: School }) => {
           </div>
         </div>
         {school.logoUrl && (
-          <img src={school.logoUrl} alt={school.name} className="w-12 h-12 rounded" />
+          <Image src={school.logoUrl} alt={school.name} width={48} height={48} className="w-12 h-12 rounded" />
         )}
       </div>
 

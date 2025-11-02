@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
@@ -189,7 +189,7 @@ const ParentEvalStart = () => {
       
       // 分国家提交
       const country = formData.target_country;
-      let evaluationData: any = null;
+      let evaluationData: { user_id: string; input: Record<string, unknown> } | null = null;
       if (country === 'Australia') {
         evaluationData = {
           user_id: anonymousUserId,
@@ -662,4 +662,10 @@ const ParentEvalStart = () => {
   );
 };
 
-export default ParentEvalStart; 
+export default function ParentEvalStartPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">加载中...</div>}>
+      <ParentEvalStart />
+    </Suspense>
+  );
+} 

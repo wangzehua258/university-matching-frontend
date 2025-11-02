@@ -6,7 +6,6 @@ import {
   Star, 
   DollarSign, 
   Calendar,
-  BookOpen,
   GraduationCap,
   Briefcase,
   Award,
@@ -18,7 +17,6 @@ import {
   Info,
   Users
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface AUUniversity {
   _id?: string;

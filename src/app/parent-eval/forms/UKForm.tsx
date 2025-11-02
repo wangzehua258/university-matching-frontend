@@ -95,7 +95,7 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
         {/* Q3: 名气/性价比 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            3. 更看重"名校名气"还是"综合性价比"？
+            3. 更看重&ldquo;名校名气&rdquo;还是&ldquo;综合性价比&rdquo;？
             <span className="text-xs text-gray-500 ml-2">（用于权重调节，不单独计分）</span>
           </label>
           <select
@@ -139,7 +139,7 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
         {/* Q5: Foundation */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            5. 是否需要"有 Foundation/国际大一兜底"方案？
+            5. 是否需要&ldquo;有 Foundation/国际大一兜底&rdquo;方案？
             <span className="text-xs text-gray-500 ml-2">（成绩或科目不够可先读预科/国际大一再衔接）</span>
           </label>
           <select
@@ -186,7 +186,7 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
         {/* Q7: Placement Year */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            7. 是否偏好"带实习/夹心年（Placement Year）"？
+            7. 是否偏好&ldquo;带实习/夹心年（Placement Year）&rdquo;？
             <span className="text-xs text-gray-500 ml-2">（第3年去企业，学制通常多 1 年）</span>
           </label>
           <select
@@ -297,7 +297,7 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
         {/* Q13: 接受预科路线 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            13. 接受"先读预科/国际大一再衔接本科"的路线吗？
+            13. 接受&ldquo;先读预科/国际大一再衔接本科&rdquo;的路线吗？
             <span className="text-xs text-gray-500 ml-2">（与题5呼应，避免硬拒后结果为空）</span>
           </label>
           <select
@@ -314,7 +314,7 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
         {/* Q14: 预算容忍度 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            14. 对"费用超预算但显著更好选择"的容忍度？
+            14. 对&ldquo;费用超预算但显著更好选择&rdquo;的容忍度？
             <span className="text-xs text-gray-500 ml-2">（用于回退时预算放宽额度）</span>
           </label>
           <select

@@ -102,7 +102,7 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
         {/* Q3 名气/性价比（权重调节） */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            更看重"名校名气"还是"综合性价比"？
+            更看重&ldquo;名校名气&rdquo;还是&ldquo;综合性价比&rdquo;？
           </label>
           <select
             value={value.reputation_vs_value}
@@ -189,7 +189,7 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
         {/* Q5 WIL */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            是否需要"带实习/产业项目（WIL）"？
+            是否需要&ldquo;带实习/产业项目（WIL）&rdquo;？
           </label>
           <select
             value={value.wil_preference}
@@ -225,7 +225,7 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
         {/* Q15 就业口碑/带实习标签（权重调节） */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            更看重"学校整体就业口碑"还是"明确的带实习标签"？
+            更看重&ldquo;学校整体就业口碑&rdquo;还是&ldquo;明确的带实习标签&rdquo;？
           </label>
           <select
             value={value.career_focus}
@@ -307,7 +307,7 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
         {/* Q14 是否接受语言/过渡课 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            ✅ 若短期达不到英语分数，是否接受"先读语言/过渡课程再入学"方案？
+            ✅ 若短期达不到英语分数，是否接受&ldquo;先读语言/过渡课程再入学&rdquo;方案？
           </label>
           <select
             value={value.accept_language_course ? 'accept' : 'reject'}

@@ -96,7 +96,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
         {/* Q3: 名气/性价比 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            3. 更看重"名校名气"还是"综合性价比"？
+            3. 更看重&ldquo;名校名气&rdquo;还是&ldquo;综合性价比&rdquo;？
             <span className="text-xs text-gray-500 ml-2">（用于权重调节，不单独计分）</span>
           </label>
           <select
@@ -141,7 +141,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
         {/* Q5-Q7: TG/Bond */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            5. 是否希望/接受"学费资助（Tuition Grant，简称TG）"？
+            5. 是否希望/接受&ldquo;学费资助（Tuition Grant，简称TG）&rdquo;？
           </label>
           <select
             value={value.bond_acceptance || ''}
@@ -173,7 +173,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
               onChange={(e) => onChange({ hard_refuse_bond: e.target.checked })}
               className="rounded border-gray-300 text-blue-600"
             />
-            <span className="text-sm text-gray-700">7. ✅ 严格拒绝"服务期"（签约需在新加坡工作若干年）</span>
+            <span className="text-sm text-gray-700">7. ✅ 严格拒绝&ldquo;服务期&rdquo;（签约需在新加坡工作若干年）</span>
           </label>
         </div>
       </div>
@@ -203,7 +203,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
         {/* Q9-Q10: 面试/作品集 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            9. 是否接受"面试/作品集/小论文"类要求？
+            9. 是否接受&ldquo;面试/作品集/小论文&rdquo;类要求？
           </label>
           <select
             value={value.interview_portfolio || ''}
@@ -223,7 +223,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
               onChange={(e) => onChange({ hard_refuse_interview_or_portfolio: e.target.checked })}
               className="rounded border-gray-300 text-blue-600"
             />
-            <span className="text-sm text-gray-700">10. ✅ 严格拒绝"面试或作品集"（若勾选就排除一切需要的专业/学校）</span>
+            <span className="text-sm text-gray-700">10. ✅ 严格拒绝&ldquo;面试或作品集&rdquo;（若勾选就排除一切需要的专业/学校）</span>
           </label>
         </div>
       </div>
@@ -241,7 +241,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
               onChange={(e) => onChange({ want_double_degree: e.target.checked })}
               className="rounded border-gray-300 text-blue-600"
             />
-            <span className="text-sm font-medium text-gray-700">11. 希望有"双学位/跨学科"机会</span>
+            <span className="text-sm font-medium text-gray-700">11. 希望有&ldquo;双学位/跨学科&rdquo;机会</span>
           </label>
         </div>
 
@@ -254,7 +254,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
               onChange={(e) => onChange({ want_exchange: e.target.checked })}
               className="rounded border-gray-300 text-blue-600"
             />
-            <span className="text-sm font-medium text-gray-700">12. 希望有"海外交换/合作项目"</span>
+            <span className="text-sm font-medium text-gray-700">12. 希望有&ldquo;海外交换/合作项目&rdquo;</span>
           </label>
         </div>
 
@@ -296,7 +296,7 @@ export function SGForm({ value, onChange }: { value: SGFormData; onChange: (v: P
         {/* Q14: 预算容忍度 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            14. 对"费用超预算但明显更优"的容忍度？
+            14. 对&ldquo;费用超预算但明显更优&rdquo;的容忍度？
             <span className="text-xs text-gray-500 ml-2">（用于回退时预算放宽的最大幅度）</span>
           </label>
           <select

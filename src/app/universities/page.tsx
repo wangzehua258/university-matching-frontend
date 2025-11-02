@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { Search, Filter, MapPin, Star, DollarSign, Users } from 'lucide-react';
 import { universityAPI } from '@/lib/api';
@@ -24,7 +24,7 @@ interface University {
   description?: string;
 }
 
-export default function UniversitiesPage() {
+function UniversitiesPageInner() {
   const searchParams = useSearchParams();
   const [universities, setUniversities] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
@@ -504,5 +504,13 @@ export default function UniversitiesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function UniversitiesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">加载中...</div>}>
+      <UniversitiesPageInner />
+    </Suspense>
   );
 } 

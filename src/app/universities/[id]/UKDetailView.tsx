@@ -6,7 +6,6 @@ import {
   Star, 
   DollarSign, 
   Calendar,
-  BookOpen,
   GraduationCap,
   Briefcase,
   Award,
@@ -17,7 +16,6 @@ import {
   XCircle,
   Info,
   Users,
-  Building,
   Target,
   GraduationCap as CapIcon
 } from 'lucide-react';
@@ -622,7 +620,7 @@ export default function UKDetailView({ university, onBack }: UKDetailViewProps) 
                         <strong>什么是Russell Group？</strong>
                       </p>
                       <p>
-                        罗素集团是英国24所顶尖研究型大学组成的联盟，相当于英国的"常春藤联盟"。这些大学在研究和教学方面享有很高的声誉。
+                        罗素集团是英国24所顶尖研究型大学组成的联盟，相当于英国的&ldquo;常春藤联盟&rdquo;。这些大学在研究和教学方面享有很高的声誉。
                       </p>
                       <p className="mt-2">
                         <strong>特点：</strong>

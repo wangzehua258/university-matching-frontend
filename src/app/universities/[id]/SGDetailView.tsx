@@ -6,7 +6,6 @@ import {
   Star, 
   DollarSign, 
   Calendar,
-  BookOpen,
   GraduationCap,
   Briefcase,
   Award,
