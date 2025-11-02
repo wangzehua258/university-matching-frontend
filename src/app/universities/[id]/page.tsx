@@ -24,6 +24,7 @@ import {
 import { universityAPI } from '@/lib/api';
 import AUDetailView from './AUDetailView';
 import SGDetailView from './SGDetailView';
+import UKDetailView from './UKDetailView';
 
 interface University {
   id: string;
@@ -88,8 +89,8 @@ export default function UniversityDetailPage() {
             const u = resp.data as any;
             console.log('✅ API响应成功:', u);
             
-            // 如果是澳大利亚或新加坡，保存原始数据以便在详情页显示
-            if (country === 'Australia' || country === 'Singapore') {
+            // 如果是国际大学（澳大利亚、新加坡、英国），保存原始数据以便在详情页显示
+            if (country === 'Australia' || country === 'Singapore' || country === 'United Kingdom') {
               setAuData(u);
               // 仍然映射到通用格式以兼容现有UI
               const mapped: University = {
@@ -217,6 +218,18 @@ export default function UniversityDetailPage() {
   if (country === 'Singapore' && auData) {
     return (
       <SGDetailView 
+        university={{
+          ...auData,
+          id: auData._id || auData.id,
+        }} 
+        onBack={() => router.push('/universities')} 
+      />
+    );
+  }
+
+  if (country === 'United Kingdom' && auData) {
+    return (
+      <UKDetailView 
         university={{
           ...auData,
           id: auData._id || auData.id,
