@@ -114,12 +114,37 @@ function UniversitiesPageInner() {
     }
   }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax, searchParams]);
 
+  // 定义loadFilters函数，必须在useEffect之前
+  const loadFilters = useCallback(async () => {
+    try {
+      // 获取当前选中的国家（优先使用URL参数）
+      const currentCountry = searchParams?.get('country') || selectedCountry;
+      
+      const [countriesData, strengthsData] = await Promise.all([
+        universityAPI.getCountries(),
+        universityAPI.getStrengths(currentCountry || undefined)
+      ]);
+      const base = Array.isArray(countriesData.countries) ? countriesData.countries : [];
+      const extras = ['Australia', 'United Kingdom', 'Singapore'];
+      const merged = Array.from(new Set([...base, ...extras]));
+      setCountries(merged);
+      setStrengths(strengthsData.strengths || []);
+    } catch (error) {
+      console.error('加载筛选数据失败:', error);
+    }
+  }, [searchParams, selectedCountry]);
+
   useEffect(() => {
     loadUniversities();
-    loadFilters();
   }, [loadUniversities]);
-
+  
+  // 初始化时加载筛选选项
+  useEffect(() => {
+    loadFilters();
+  }, [loadFilters]);
+  
   // 同步URL参数到状态（当URL变化时更新状态）
+  // loadFilters会在国家变化时自动触发（因为依赖searchParams和selectedCountry）
   useEffect(() => {
     const countryFromUrl = searchParams?.get('country') || '';
     if (countryFromUrl && countryFromUrl !== selectedCountry) {
@@ -131,22 +156,6 @@ function UniversitiesPageInner() {
     }
   }, [searchParams, selectedCountry]);
 
-  const loadFilters = async () => {
-    try {
-      const [countriesData, strengthsData] = await Promise.all([
-        universityAPI.getCountries(),
-        universityAPI.getStrengths()
-      ]);
-      const base = Array.isArray(countriesData.countries) ? countriesData.countries : [];
-      const extras = ['Australia', 'United Kingdom', 'Singapore'];
-      const merged = Array.from(new Set([...base, ...extras]));
-      setCountries(merged);
-      setStrengths(strengthsData.strengths);
-    } catch (error) {
-      console.error('加载筛选数据失败:', error);
-    }
-  };
-
   const handleSearch = () => {
     setCurrentPage(1); // 搜索时重置到第一页
     loadUniversities();
@@ -154,7 +163,11 @@ function UniversitiesPageInner() {
 
   const clearFilters = () => {
     setSearchTerm('');
-    setSelectedCountry('');
+    // 如果URL中有country参数，不清除国家筛选
+    const countryFromUrl = searchParams?.get('country');
+    if (!countryFromUrl) {
+      setSelectedCountry('');
+    }
     setSelectedType('');
     setSelectedStrength('');
     setRankMin('');
@@ -210,18 +223,15 @@ function UniversitiesPageInner() {
     }
   };
 
-  // 使用useEffect实现实时筛选（用于搜索和筛选变化时的防抖）
-  // loadUniversities已经在useCallback中依赖了所有必要的值，包括searchParams
-  // 这个effect主要用于搜索框输入时的防抖
+  // 使用useEffect实现实时筛选和搜索
+  // 搜索使用防抖，其他筛选立即生效
   useEffect(() => {
-    if (searchTerm) {
-      // 只有在搜索时使用防抖
-      const timer = setTimeout(() => {
-        loadUniversities();
-      }, 300); // 300ms防抖
-      return () => clearTimeout(timer);
-    }
-  }, [searchTerm, loadUniversities]);
+    const timer = setTimeout(() => {
+      loadUniversities();
+    }, searchTerm ? 300 : 0); // 搜索框输入时使用300ms防抖，其他筛选立即生效
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, selectedCountry, selectedType, selectedStrength, currentPage, rankMin, rankMax, tuitionMax, loadUniversities]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -432,8 +442,8 @@ function UniversitiesPageInner() {
                   </p>
 
                   <Link
-                    href={selectedCountry && ['Australia','United Kingdom','Singapore'].includes(selectedCountry)
-                      ? `/universities/${university.id}?country=${encodeURIComponent(selectedCountry)}`
+                    href={(selectedCountry || searchParams?.get('country')) && ['Australia','United Kingdom','Singapore'].includes(selectedCountry || searchParams?.get('country') || '')
+                      ? `/universities/${university.id}?country=${encodeURIComponent(selectedCountry || searchParams?.get('country') || '')}`
                       : `/universities/${university.id}`}
                     className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
                   >

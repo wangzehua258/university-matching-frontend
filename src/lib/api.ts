@@ -118,9 +118,10 @@ export const universityAPI = {
     return response.data;
   },
 
-  // 获取所有优势专业列表
-  getStrengths: async () => {
-    const response = await api.get('/universities/strengths/list');
+  // 获取所有优势专业列表（支持按国家筛选）
+  getStrengths: async (country?: string) => {
+    const params = country ? { country } : {};
+    const response = await api.get('/universities/strengths/list', { params });
     return response.data;
   },
 };
