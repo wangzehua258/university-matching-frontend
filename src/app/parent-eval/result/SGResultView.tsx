@@ -173,7 +173,7 @@ export function SGResultView({ result }: { result: SGResultData }) {
         {/* 操作按钮 */}
         <div className="text-center">
           <button
-            onClick={() => window.location.href = '/parent-eval/start'}
+            onClick={() => window.location.href = '/parent-eval/start?country=Singapore'}
             className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 mr-4"
           >
             重新评估

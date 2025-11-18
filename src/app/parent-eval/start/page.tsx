@@ -131,38 +131,74 @@ const ParentEvalStart = () => {
 
   const validateCurrentStep = () => {
     const newErrors: {[key: string]: string} = {};
+    const country = formData.target_country;
     
-    if (currentStep === 1) {
-      // 验证基本信息
-      if (!formData.grade) {
-        newErrors.grade = '请选择年级';
-      }
-      if (!formData.gpa_range) {
-        newErrors.gpa_range = '请选择GPA范围';
-      }
-      if (formData.sat_score && parseInt(formData.sat_score) < 1350) {
-        newErrors.sat_score = 'SAT分数不能低于1350分';
-      }
-      if (formData.activities.length < 2) {
-        newErrors.activities = '请至少选择2项活动经历';
-      }
-      // 美国评估不需要选择目标国家，自动设置为USA
-      // 其他国家的评估在URL参数中已经指定，也不需要显示选择框
-    } else if (currentStep === 2) {
-      // 验证兴趣偏好
-      if (formData.interest_fields.length < 3) {
-        newErrors.interest_fields = '请至少选择3个兴趣方向';
-      }
-      if (!formData.school_type_preference) {
-        newErrors.school_type_preference = '请选择学校类型偏好';
-      }
-    } else if (currentStep === 3) {
-      // 验证家庭取向
-      if (!formData.budget) {
-        newErrors.budget = '请选择预算范围';
-      }
-      if (!formData.family_expectation) {
-        newErrors.family_expectation = '请选择家长期望';
+    // AU/UK/SG 使用单页表单，需要验证所有字段
+    if (country === 'Australia') {
+      if (!auData.academic_band) newErrors.academic_band = '请选择学术水平';
+      if (auData.interests.length === 0) newErrors.interests = '请至少选择一个专业兴趣方向';
+      if (!auData.reputation_vs_value) newErrors.reputation_vs_value = '请选择名气/性价比偏好';
+      if (!auData.budget_usd || auData.budget_usd <= 0) newErrors.budget_usd = '请输入年度学费预算';
+      if (!auData.study_length_preference) newErrors.study_length_preference = '请选择学制偏好';
+      if (!auData.intake_preference) newErrors.intake_preference = '请选择入学时间偏好';
+      if (!auData.wil_preference) newErrors.wil_preference = '请选择WIL需求';
+      if (!auData.psw_importance) newErrors.psw_importance = '请选择PSW重要性';
+      if (!auData.career_focus) newErrors.career_focus = '请选择就业口碑/带实习标签偏好';
+      if (auData.city_preferences.length === 0) newErrors.city_preferences = '请至少选择一个意向城市';
+      if (!auData.intl_community_importance) newErrors.intl_community_importance = '请选择国际社区重要性';
+      if (!auData.english_readiness) newErrors.english_readiness = '请选择英语准备度';
+      if (!auData.go8_preference) newErrors.go8_preference = '请选择Go8偏好';
+      if (!auData.scholarship_importance) newErrors.scholarship_importance = '请选择奖学金重要性';
+      if (!auData.main_concern) newErrors.main_concern = '请选择最担心的一点';
+    } else if (country === 'United Kingdom') {
+      if (!ukData.academic_band) newErrors.academic_band = '请选择学术水平';
+      if (ukData.interests.length === 0) newErrors.interests = '请至少选择一个专业兴趣方向';
+      if (!ukData.reputation_vs_value) newErrors.reputation_vs_value = '请选择名气/性价比偏好';
+      if (!ukData.budget_usd || ukData.budget_usd <= 0) newErrors.budget_usd = '请输入年度学费预算';
+      if (!ukData.foundation_need) newErrors.foundation_need = '请选择Foundation需求';
+      if (!ukData.ucas_route) newErrors.ucas_route = '请选择UCAS路线';
+      if (!ukData.placement_year_pref) newErrors.placement_year_pref = '请选择Placement Year偏好';
+      if (!ukData.prep_level) newErrors.prep_level = '请选择材料/准备度';
+      if (!ukData.russell_pref) newErrors.russell_pref = '请选择罗素集团偏好';
+      if (!ukData.region_pref) newErrors.region_pref = '请选择地域偏好';
+      if (!ukData.intl_env_importance) newErrors.intl_env_importance = '请选择国际环境重要性';
+      if (!ukData.main_concern) newErrors.main_concern = '请选择最担心的一点';
+    } else if (country === 'Singapore') {
+      if (!sgData.academic_band) newErrors.academic_band = '请选择学术水平';
+      if (sgData.interests.length === 0) newErrors.interests = '请至少选择一个专业兴趣方向';
+      if (!sgData.reputation_vs_value) newErrors.reputation_vs_value = '请选择名气/性价比偏好';
+      if (!sgData.budget_usd || sgData.budget_usd <= 0) newErrors.budget_usd = '请输入年度学费预算';
+      if (!sgData.bond_acceptance) newErrors.bond_acceptance = '请选择TG/服务期接受度';
+      if (!sgData.orientation) newErrors.orientation = '请选择培养导向';
+      if (!sgData.interview_portfolio) newErrors.interview_portfolio = '请选择面试/作品集接受度';
+      if (!sgData.safety_importance) newErrors.safety_importance = '请选择安全重要性';
+      if (!sgData.scholarship_importance) newErrors.scholarship_importance = '请选择奖学金重要性';
+      if (!sgData.main_concern) newErrors.main_concern = '请选择最担心的一点';
+    } else {
+      // 美国评估的多步表单验证
+      if (currentStep === 1) {
+        if (!formData.grade) newErrors.grade = '请选择年级';
+        if (!formData.gpa_range) newErrors.gpa_range = '请选择GPA范围';
+        if (formData.sat_score && parseInt(formData.sat_score) < 1350) {
+          newErrors.sat_score = 'SAT分数不能低于1350分';
+        }
+        if (formData.activities.length < 2) {
+          newErrors.activities = '请至少选择2项活动经历';
+        }
+      } else if (currentStep === 2) {
+        if (formData.interest_fields.length < 3) {
+          newErrors.interest_fields = '请至少选择3个兴趣方向';
+        }
+        if (!formData.school_type_preference) {
+          newErrors.school_type_preference = '请选择学校类型偏好';
+        }
+      } else if (currentStep === 3) {
+        if (!formData.budget) {
+          newErrors.budget = '请选择预算范围';
+        }
+        if (!formData.family_expectation) {
+          newErrors.family_expectation = '请选择家长期望';
+        }
       }
     }
     
@@ -184,6 +220,13 @@ const ParentEvalStart = () => {
   };
 
   const submitEvaluation = async () => {
+    // 先验证所有必填项
+    if (!validateCurrentStep()) {
+      // 滚动到顶部显示错误
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    
     try {
       setLoading(true);
       
@@ -539,8 +582,18 @@ const ParentEvalStart = () => {
     if (c === 'Australia') {
       return (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">澳大利亚家长评估（10题）</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">澳大利亚家长评估（16题）</h2>
           <AUForm value={auData} onChange={(v) => setAuData((prev) => ({ ...prev, ...v }))} />
+          {Object.keys(errors).length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-800 font-medium mb-2">请完成以下必填项：</p>
+              <ul className="list-disc list-inside text-red-700 text-sm space-y-1">
+                {Object.values(errors).map((error, idx) => (
+                  <li key={idx}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="flex justify-end">
             <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
           </div>
@@ -550,8 +603,18 @@ const ParentEvalStart = () => {
     if (c === 'United Kingdom') {
       return (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">英国家长评估（10题）</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">英国家长评估（15题）</h2>
           <UKForm value={ukData} onChange={(v) => setUkData((prev) => ({ ...prev, ...v }))} />
+          {Object.keys(errors).length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-800 font-medium mb-2">请完成以下必填项：</p>
+              <ul className="list-disc list-inside text-red-700 text-sm space-y-1">
+                {Object.values(errors).map((error, idx) => (
+                  <li key={idx}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="flex justify-end">
             <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
           </div>
@@ -561,8 +624,18 @@ const ParentEvalStart = () => {
     if (c === 'Singapore') {
       return (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">新加坡家长评估（10题）</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">新加坡家长评估（15题）</h2>
           <SGForm value={sgData} onChange={(v) => setSgData((prev) => ({ ...prev, ...v }))} />
+          {Object.keys(errors).length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-800 font-medium mb-2">请完成以下必填项：</p>
+              <ul className="list-disc list-inside text-red-700 text-sm space-y-1">
+                {Object.values(errors).map((error, idx) => (
+                  <li key={idx}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="flex justify-end">
             <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
           </div>

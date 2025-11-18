@@ -173,7 +173,7 @@ export function UKResultView({ result }: { result: UKResultData }) {
         {/* 操作按钮 */}
         <div className="text-center">
           <button
-            onClick={() => window.location.href = '/parent-eval/start'}
+            onClick={() => window.location.href = '/parent-eval/start?country=United+Kingdom'}
             className="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 mr-4"
           >
             重新评估

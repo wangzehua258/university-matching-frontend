@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MapPin, DollarSign, GraduationCap, Briefcase, Globe, Clock, FileText, AlertCircle } from 'lucide-react';
+import { MapPin, DollarSign, GraduationCap, Briefcase, Globe, Clock, FileText, AlertCircle, Award, Lightbulb } from 'lucide-react';
 
 interface AUSchool {
   id: string;
@@ -70,110 +70,122 @@ export function AUResultView({ result }: { result: AUResultData }) {
           </div>
         )}
 
-        {/* 关键信息汇总 */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <FileText className="w-5 h-5 mr-2 text-blue-600" />
-            关键信息汇总
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start space-x-3">
-              <DollarSign className="w-5 h-5 text-green-600 mt-1" />
-              <div>
-                <p className="font-medium text-gray-900">预算范围</p>
-                <p className="text-sm text-gray-600">{result.keyInfoSummary.budgetRange}</p>
+        {/* 参考美国大学设计：3列布局 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* 左侧：关键信息和专业建议 */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* 关键信息汇总 */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                关键信息汇总
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <DollarSign className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">预算范围</p>
+                    <p className="text-xs text-gray-600 mt-1">{result.keyInfoSummary.budgetRange}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Globe className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">英语要求</p>
+                    <p className="text-xs text-gray-600 mt-1">{result.keyInfoSummary.englishRequirement}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">入学时间</p>
+                    <p className="text-xs text-gray-600 mt-1">{result.keyInfoSummary.intakeTiming}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Briefcase className="w-5 h-5 text-orange-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">工签信息</p>
+                    <p className="text-xs text-gray-600 mt-1">{result.keyInfoSummary.pswInfo}</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex items-start space-x-3">
-              <Globe className="w-5 h-5 text-blue-600 mt-1" />
-              <div>
-                <p className="font-medium text-gray-900">英语要求</p>
-                <p className="text-sm text-gray-600">{result.keyInfoSummary.englishRequirement}</p>
-              </div>
+
+            {/* 专业建议 - 放在显眼位置 */}
+            <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg shadow-lg p-6 border border-purple-200">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <Lightbulb className="w-5 h-5 mr-2 text-purple-600" />
+                专业建议
+              </h2>
+              {result.gptSummary ? (
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
+                    {result.gptSummary}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm italic">专业建议生成中...</p>
+              )}
             </div>
-            <div className="flex items-start space-x-3">
-              <Clock className="w-5 h-5 text-purple-600 mt-1" />
-              <div>
-                <p className="font-medium text-gray-900">入学时间</p>
-                <p className="text-sm text-gray-600">{result.keyInfoSummary.intakeTiming}</p>
+
+            {/* 申请流程指导 */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <GraduationCap className="w-5 h-5 mr-2 text-green-600" />
+                {result.applicationGuidance.title}
+              </h2>
+              <div className="space-y-2">
+                {result.applicationGuidance.steps.map((step, idx) => (
+                  <div key={idx} className="flex items-start space-x-2">
+                    <span className="flex-shrink-0 w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium mt-0.5">
+                      {idx + 1}
+                    </span>
+                    <p className="text-gray-700 text-xs leading-relaxed">{step}</p>
+                  </div>
+                ))}
               </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <Briefcase className="w-5 h-5 text-orange-600 mt-1" />
-              <div>
-                <p className="font-medium text-gray-900">工签信息</p>
-                <p className="text-sm text-gray-600">{result.keyInfoSummary.pswInfo}</p>
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <h3 className="font-semibold text-gray-900 text-sm mb-2">重要提示：</h3>
+                <ul className="space-y-1">
+                  {result.applicationGuidance.keyPoints.map((point, idx) => (
+                    <li key={idx} className="text-xs text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* 专业建议 */}
-        {result.gptSummary && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <Globe className="w-5 h-5 mr-2 text-purple-600" />
-              专业建议
-            </h2>
-            <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-              {result.gptSummary}
-            </p>
-          </div>
-        )}
-
-        {/* 推荐学校列表 */}
-        <div className="space-y-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">推荐学校 ({result.recommendedSchools.length} 所)</h2>
-          {result.recommendedSchools.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <p className="text-gray-600 mb-4">暂无推荐学校，请调整筛选条件后重新评估</p>
-              <button
-                onClick={() => window.location.href = '/parent-eval/start'}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                重新评估
-              </button>
+          {/* 右侧：推荐学校列表 */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">推荐学校 ({result.recommendedSchools.length} 所)</h2>
             </div>
-          ) : (
-            result.recommendedSchools.map((school, index) => (
-              <AUSchoolCard key={school.id} school={school} rank={index + 1} />
-            ))
-          )}
-        </div>
-
-        {/* 申请流程指导 */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <GraduationCap className="w-5 h-5 mr-2 text-green-600" />
-            {result.applicationGuidance.title}
-          </h2>
-          <div className="space-y-3">
-            {result.applicationGuidance.steps.map((step, idx) => (
-              <div key={idx} className="flex items-start space-x-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium">
-                  {idx + 1}
-                </span>
-                <p className="text-gray-700 text-sm leading-relaxed">{step}</p>
+            {result.recommendedSchools.length === 0 ? (
+              <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+                <p className="text-gray-600 mb-4">暂无推荐学校，请调整筛选条件后重新评估</p>
+                <button
+                  onClick={() => window.location.href = '/parent-eval/start?country=Australia'}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  重新评估
+                </button>
               </div>
-            ))}
-          </div>
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-3">重要提示：</h3>
-            <ul className="space-y-2">
-              {result.applicationGuidance.keyPoints.map((point, idx) => (
-                <li key={idx} className="text-sm text-gray-600 flex items-start">
-                  <span className="text-blue-600 mr-2">•</span>
-                  <span>{point}</span>
-                </li>
-              ))}
-            </ul>
+            ) : (
+              result.recommendedSchools.map((school, index) => (
+                <AUSchoolCard key={school.id} school={school} rank={index + 1} />
+              ))
+            )}
           </div>
         </div>
 
         {/* 操作按钮 */}
-        <div className="text-center">
+        <div className="mt-8 text-center">
           <button
-            onClick={() => window.location.href = '/parent-eval/start'}
+            onClick={() => window.location.href = '/parent-eval/start?country=Australia'}
             className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mr-4"
           >
             重新评估

@@ -42,7 +42,33 @@ export interface AUFormData {
 }
 
 export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: Partial<AUFormData>) => void }) {
-  const interestOptions = ['CS', 'AI', 'Engineering', 'Business', 'Economics', 'Design'];
+  const interestOptions = [
+    'CS', 
+    'AI', 
+    'Engineering', 
+    'Business', 
+    'Economics', 
+    'Design',
+    'Medicine',
+    'Law',
+    'Education',
+    'Architecture',
+    'Nursing',
+    'Psychology',
+    'Pharmacy',
+    'Veterinary',
+    'Agriculture',
+    'Arts',
+    'Humanities',
+    'Natural Sciences',
+    'Public Health',
+    'Communication',
+    'Film',
+    'Marine Science',
+    'Social Work',
+    'Tourism',
+    'Sports Science'
+  ];
   const cityOptions = ['Sydney', 'Melbourne', 'Brisbane', 'Adelaide', 'Perth', '不限'];
 
   const toggleInArray = (field: keyof AUFormData, item: string) => {
@@ -87,19 +113,20 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
           <label className="block text-sm font-medium text-gray-700 mb-2">
             感兴趣的专业方向（可多选）
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-2 border border-gray-200 rounded-md">
             {interestOptions.map((it) => (
-              <label key={it} className="flex items-center space-x-2">
+              <label key={it} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
                 <input
                   type="checkbox"
                   checked={value.interests.includes(it)}
                   onChange={() => toggleInArray('interests', it)}
-                  className="rounded border-gray-300 text-blue-600"
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-sm text-gray-700">{it}</span>
               </label>
             ))}
           </div>
+          <p className="text-xs text-gray-500 mt-2">已选择 {value.interests.length} 个专业方向</p>
         </div>
 
         {/* Q3 名气/性价比（权重调节） */}
@@ -131,15 +158,20 @@ export function AUForm({ value, onChange }: { value: AUFormData; onChange: (v: P
         {/* Q4 预算 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            年度学费预算（USD）
+            年度学费预算（USD） <span className="text-red-500">*</span>
           </label>
           <input
             type="number"
             min={0}
-            value={value.budget_usd || 0}
-            onChange={(e) => onChange({ budget_usd: parseInt(e.target.value || '0', 10) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            step={1000}
+            value={value.budget_usd || ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              onChange({ budget_usd: val === '' ? 0 : parseInt(val, 10) });
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="例如 30000"
+            required
           />
           <label className="flex items-center space-x-2 mt-2">
             <input
