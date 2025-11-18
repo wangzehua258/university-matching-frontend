@@ -123,13 +123,21 @@ export function UKForm({ value, onChange }: { value: UKFormData; onChange: (v: P
         
         {/* Q4: 预算 */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">4. 年度学费预算（USD）</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            4. 年度学费预算（USD） <span className="text-red-500">*</span>
+          </label>
           <input
             type="number"
             min={0}
-            value={value.budget_usd || 0}
-            onChange={(e) => onChange({ budget_usd: parseInt(e.target.value || '0', 10) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            step={1000}
+            value={value.budget_usd || ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              onChange({ budget_usd: val === '' ? 0 : parseInt(val, 10) });
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="例如 30000"
+            required
           />
           <label className="flex items-center space-x-2 mt-2">
             <input
