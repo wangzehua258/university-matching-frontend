@@ -65,7 +65,9 @@ function UniversitiesPageInner() {
       };
       if (searchTerm) params.search = searchTerm;
       if (countryFromUrl) params.country = countryFromUrl;
-      if (selectedType) params.type = selectedType;
+      // 学校类型筛选只对美国大学有效
+      const isUSA = countryFromUrl === 'USA' || countryFromUrl === 'United States' || countryFromUrl === 'US';
+      if (selectedType && isUSA) params.type = selectedType;
       if (selectedStrength) params.strength = selectedStrength;
       if (rankMin) params.rank_min = parseInt(rankMin);
       if (rankMax) params.rank_max = parseInt(rankMax);
@@ -92,7 +94,9 @@ function UniversitiesPageInner() {
         };
         if (searchTerm) fallbackParams.search = searchTerm;
         if (countryFromUrl) fallbackParams.country = countryFromUrl;
-        if (selectedType) fallbackParams.type = selectedType;
+        // 学校类型筛选只对美国大学有效
+        const isUSA = countryFromUrl === 'USA' || countryFromUrl === 'United States' || countryFromUrl === 'US';
+        if (selectedType && isUSA) fallbackParams.type = selectedType;
         if (selectedStrength) fallbackParams.strength = selectedStrength;
         if (rankMin) fallbackParams.rank_min = parseInt(rankMin);
         if (rankMax) fallbackParams.rank_max = parseInt(rankMax);
@@ -150,6 +154,11 @@ function UniversitiesPageInner() {
     if (countryFromUrl && countryFromUrl !== selectedCountry) {
       setSelectedCountry(countryFromUrl);
       setCurrentPage(1); // 切换国家时重置到第一页
+      // 如果切换到非美国国家，清空类型筛选
+      const isUSA = countryFromUrl === 'USA' || countryFromUrl === 'United States' || countryFromUrl === 'US';
+      if (!isUSA) {
+        setSelectedType('');
+      }
     } else if (!countryFromUrl && selectedCountry) {
       // 如果URL中没有country参数，但状态中有，则清空状态（除非是用户手动选择的筛选）
       // 这里保持selectedCountry，因为可能是用户在页面上选择的筛选
@@ -165,8 +174,16 @@ function UniversitiesPageInner() {
     setSearchTerm('');
     // 如果URL中有country参数，不清除国家筛选
     const countryFromUrl = searchParams?.get('country');
-    if (!countryFromUrl) {
+    if (countryFromUrl) {
+      setSelectedCountry(countryFromUrl);
+    } else {
       setSelectedCountry('');
+    }
+    // 切换国家时，如果不是美国，清空类型筛选
+    const currentCountry = countryFromUrl || selectedCountry;
+    const isUSA = currentCountry === 'USA' || currentCountry === 'United States' || currentCountry === 'US';
+    if (!isUSA) {
+      setSelectedType('');
     }
     setSelectedType('');
     setSelectedStrength('');
@@ -303,18 +320,26 @@ function UniversitiesPageInner() {
               </div>
             )}
 
-            {/* Type Filter */}
-            <div>
-              <select
-                value={selectedType}
-                onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">所有类型</option>
-                <option value="private">私立</option>
-                <option value="public">公立</option>
-              </select>
-            </div>
+            {/* Type Filter - 只对美国大学显示 */}
+            {(() => {
+              const currentCountry = searchParams?.get('country') || selectedCountry;
+              const isUSA = currentCountry === 'USA' || currentCountry === 'United States' || currentCountry === 'US';
+              if (!isUSA) return null;
+              
+              return (
+                <div>
+                  <select
+                    value={selectedType}
+                    onChange={(e) => handleFilterChange('type', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">所有类型</option>
+                    <option value="private">私立</option>
+                    <option value="public">公立</option>
+                  </select>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Additional Filters */}

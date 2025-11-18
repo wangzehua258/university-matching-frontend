@@ -210,7 +210,11 @@ const ParentEvalResultInner = () => {
                 申请策略
               </h2>
               <p className="text-gray-700 text-sm leading-relaxed">
-                {typeof result.strategy === 'string' ? result.strategy : ''}
+                {typeof result.strategy === 'string' 
+                  ? result.strategy 
+                  : (result.strategy && typeof result.strategy === 'object' && 'plan' in result.strategy
+                    ? result.strategy.plan
+                    : '')}
               </p>
             </div>
 

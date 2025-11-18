@@ -119,6 +119,9 @@ const ParentEvalStart = () => {
     const c = searchParams?.get('country') || '';
     if (c) {
       setFormData(prev => ({ ...prev, target_country: c }));
+    } else {
+      // 如果没有指定国家，默认是美国评估
+      setFormData(prev => ({ ...prev, target_country: 'USA' }));
     }
   }, [searchParams]);
 
@@ -143,9 +146,8 @@ const ParentEvalStart = () => {
       if (formData.activities.length < 2) {
         newErrors.activities = '请至少选择2项活动经历';
       }
-      if (!formData.target_country) {
-        newErrors.target_country = '请选择目标国家';
-      }
+      // 美国评估不需要选择目标国家，自动设置为USA
+      // 其他国家的评估在URL参数中已经指定，也不需要显示选择框
     } else if (currentStep === 2) {
       // 验证兴趣偏好
       if (formData.interest_fields.length < 3) {
@@ -383,24 +385,8 @@ const ParentEvalStart = () => {
           )}
         </div>
 
-        {!searchParams?.get('country') && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            目标国家
-          </label>
-          <select
-            value={formData.target_country}
-            onChange={(e) => handleInputChange('target_country', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">请选择国家</option>
-            <option value="Australia">澳大利亚</option>
-            <option value="United Kingdom">英国</option>
-            <option value="Singapore">新加坡</option>
-            <option value="USA">美国</option>
-          </select>
-        </div>
-        )}
+        {/* 美国评估不显示目标国家选择框，因为必定是美国 */}
+        {/* 其他国家的评估通过URL参数指定，也不显示选择框 */}
       </div>
 
               <div>

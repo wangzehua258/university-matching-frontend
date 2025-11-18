@@ -39,6 +39,7 @@ interface AUResultData {
     intakeTiming: string;
     pswInfo: string;
   };
+  gptSummary?: string;
   created_at: string;
 }
 
@@ -106,6 +107,19 @@ export function AUResultView({ result }: { result: AUResultData }) {
             </div>
           </div>
         </div>
+
+        {/* 专业建议 */}
+        {result.gptSummary && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <Globe className="w-5 h-5 mr-2 text-purple-600" />
+              专业建议
+            </h2>
+            <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
+              {result.gptSummary}
+            </p>
+          </div>
+        )}
 
         {/* 推荐学校列表 */}
         <div className="space-y-6 mb-8">

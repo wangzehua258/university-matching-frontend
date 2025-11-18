@@ -502,50 +502,40 @@ export default function USDetailView({ university, onBack }: USDetailViewProps) 
                 <div className="flex items-start">
                   <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0 mt-0.5">1</div>
                   <div>
-                    <p className="font-medium text-gray-900">高二下学期 - 高三上学期</p>
-                    <p className="text-gray-600">准备标准化考试（SAT/ACT），参加托福/雅思考试</p>
+                    <p className="font-medium text-gray-900">初三/高一阶段</p>
+                    <p className="text-gray-600">开始规划留学目标，提升英语能力，参加夏校或学术活动，积累课外活动经历</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0 mt-0.5">2</div>
                   <div>
-                    <p className="font-medium text-gray-900">高三上学期（10-11月）</p>
-                    <p className="text-gray-600">完成ED/EA申请，准备推荐信、个人陈述等材料</p>
+                    <p className="font-medium text-gray-900">高二阶段</p>
+                    <p className="text-gray-600">开始准备标准化考试（SAT/ACT），参加托福/雅思考试，确定目标学校，开始准备申请材料</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0 mt-0.5">3</div>
                   <div>
-                    <p className="font-medium text-gray-900">高三上学期末（12月-1月）</p>
-                    <p className="text-gray-600">提交RD申请，所有材料需在截止日期前完成</p>
+                    <p className="font-medium text-gray-900">高三上学期（10-11月）</p>
+                    <p className="text-gray-600">完成ED/EA申请，准备推荐信、个人陈述等材料，确保所有标准化考试成绩已提交</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0 mt-0.5">4</div>
                   <div>
+                    <p className="font-medium text-gray-900">高三上学期末（12月-1月）</p>
+                    <p className="text-gray-600">提交RD申请，所有材料需在截止日期前完成，跟进申请状态</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0 mt-0.5">5</div>
+                  <div>
                     <p className="font-medium text-gray-900">高三下学期（3-5月）</p>
-                    <p className="text-gray-600">收到录取通知，选择学校，提交入学意向</p>
+                    <p className="text-gray-600">收到录取通知，比较各校offer，选择最终学校，提交入学意向和押金</p>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* 学校标签 */}
-            {university.tags && university.tags.length > 0 && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">学校特色</h3>
-                <div className="flex flex-wrap gap-2">
-                  {university.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-md"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* 官网链接 */}
             {university.website && (
@@ -572,7 +562,7 @@ export default function USDetailView({ university, onBack }: USDetailViewProps) 
               <ul className="space-y-2 text-sm text-gray-700">
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
-                  <span>美国大学申请竞争激烈，建议提前1-2年开始准备</span>
+                  <span>美国大学申请竞争激烈，建议提前2-3年开始准备</span>
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2">•</span>

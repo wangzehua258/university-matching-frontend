@@ -28,9 +28,6 @@ export default function SelectCountryPage() {
               className="block p-6 bg-white rounded-xl shadow hover:shadow-md border border-gray-200"
             >
               <div className="text-lg font-semibold text-gray-900">{c.label}</div>
-              <div className="text-gray-600 mt-1 text-sm">
-                {c.key === 'USA' ? '美国大学库（现有）' : '国际大学库（新）'}
-              </div>
             </Link>
           ))}
         </div>
