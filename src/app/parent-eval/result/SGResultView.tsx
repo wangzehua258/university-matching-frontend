@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { MapPin, DollarSign, GraduationCap, Clock, FileText, AlertCircle, Award, Building2, Globe, Lightbulb } from 'lucide-react';
+import Link from 'next/link';
+import { MapPin, DollarSign, GraduationCap, Clock, FileText, AlertCircle, Award, Building2, Lightbulb, ArrowLeft } from 'lucide-react';
 
 interface SGSchool {
   id: string;
@@ -46,11 +47,38 @@ interface SGResultData {
 export function SGResultView({ result }: { result: SGResultData }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/"
+                className="flex items-center text-green-600 hover:text-green-700 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-1 rotate-180" />
+                <span>返回首页</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center">
+                <GraduationCap className="h-8 w-8 text-green-600" />
+                <h1 className="ml-2 text-xl font-bold text-gray-900">新加坡大学推荐报告</h1>
+              </div>
+            </div>
+            <button
+              onClick={() => window.location.href = '/parent-eval/start?country=Singapore'}
+              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+            >
+              重新测评
+            </button>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">新加坡大学推荐报告</h1>
-          <p className="text-gray-600">基于您的评估结果生成的专属推荐</p>
+          <p className="text-gray-600 mb-4">基于您的评估结果生成的专属推荐</p>
         </div>
 
         {/* 回退信息提示（如果有） */}
@@ -171,6 +199,24 @@ export function SGResultView({ result }: { result: SGResultData }) {
 
           {/* 右侧：推荐学校列表 */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Typeform CTA - 推荐学校之前 */}
+            <div className="bg-gradient-to-r from-green-600 to-teal-600 rounded-lg shadow-lg p-5 text-white mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="font-semibold text-lg mb-1">填写表格取得联系，获得更详细的免费申请资料</p>
+                  <p className="text-green-100 text-sm">包括：申请时间表、TG申请指导、面试准备建议、一对一专业顾问30分钟免费诊断等</p>
+                </div>
+                <a 
+                  href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-4 px-6 py-3 bg-white text-green-600 rounded-lg hover:bg-gray-50 transition-colors font-semibold whitespace-nowrap"
+                >
+                  填写表格获取免费申请资料
+                </a>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-gray-900">推荐学校 ({result.recommendedSchools.length} 所)</h2>
             </div>

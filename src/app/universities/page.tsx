@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { Search, Filter, MapPin, Star, DollarSign, Users, GraduationCap, ArrowRight, Building2, Globe } from 'lucide-react';
+import { Search, MapPin, Star, DollarSign, Users, GraduationCap, ArrowRight, Building2, Globe } from 'lucide-react';
 import { universityAPI } from '@/lib/api';
 import { useSearchParams } from 'next/navigation';
 
@@ -286,6 +286,19 @@ function UniversitiesPageInner() {
       {/* Search and Filters */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Typeform CTA Banner - 筛选栏下方 */}
+          <a 
+            href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-md p-4 text-white hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div>
+              <p className="font-semibold text-base mb-1">想要更精准的选校建议？</p>
+              <p className="text-blue-100 text-sm">填写详细评估表格，获得一对一专业顾问30分钟免费诊断和个性化选校方案</p>
+            </div>
+          </a>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {/* 搜索区域 */}
             <div className="md:col-span-2">
@@ -437,9 +450,9 @@ function UniversitiesPageInner() {
             {universities.map((university) => (
               <div
                 key={university.id}
-                className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-gray-200"
+                className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-gray-200 flex flex-col"
               >
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-1">
                   {/* 头部：名称和排名 */}
                   <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
                     <div className="flex-1">
@@ -508,16 +521,18 @@ function UniversitiesPageInner() {
                     </p>
                   )}
 
-                  {/* 查看详情按钮 */}
-                  <Link
-                    href={(selectedCountry || searchParams?.get('country')) && ['Australia','United Kingdom','Singapore'].includes(selectedCountry || searchParams?.get('country') || '')
-                      ? `/universities/${university.id}?country=${encodeURIComponent(selectedCountry || searchParams?.get('country') || '')}`
-                      : `/universities/${university.id}`}
-                    className="flex items-center justify-center w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors group"
-                  >
-                    <span>查看详情</span>
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
+                  {/* 查看详情按钮 - 固定在底部 */}
+                  <div className="mt-auto pt-4">
+                    <Link
+                      href={(selectedCountry || searchParams?.get('country')) && ['Australia','United Kingdom','Singapore'].includes(selectedCountry || searchParams?.get('country') || '')
+                        ? `/universities/${university.id}?country=${encodeURIComponent(selectedCountry || searchParams?.get('country') || '')}`
+                        : `/universities/${university.id}`}
+                      className="flex items-center justify-center w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors group"
+                    >
+                      <span>查看详情</span>
+                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}

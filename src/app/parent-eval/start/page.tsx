@@ -367,78 +367,80 @@ const ParentEvalStart = () => {
 
   const renderStep1 = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">学生基本信息</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            年级
-          </label>
-          <select
-            value={formData.grade}
-            onChange={(e) => handleInputChange('grade', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">请选择年级</option>
-            <option value="高一">高一</option>
-            <option value="高二">高二</option>
-            <option value="高三">高三</option>
-          </select>
+      {/* A. 学生基本信息 */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">A</span>
+          学生基本信息
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              年级
+            </label>
+            <select
+              value={formData.grade}
+              onChange={(e) => handleInputChange('grade', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="">请选择年级</option>
+              <option value="高一">高一</option>
+              <option value="高二">高二</option>
+              <option value="高三">高三</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              GPA范围
+            </label>
+            <select
+              value={formData.gpa_range}
+              onChange={(e) => handleInputChange('gpa_range', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-md ${
+                errors.gpa_range ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
+              <option value="">请选择GPA范围</option>
+              <option value="3.9+">3.9+</option>
+              <option value="3.8+">3.8+</option>
+              <option value="3.6+">3.6+</option>
+              <option value="3.6-">3.6-</option>
+            </select>
+            {errors.gpa_range && (
+              <p className="mt-1 text-sm text-red-600">{errors.gpa_range}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              SAT分数 (可选，最低1350)
+            </label>
+            <input
+              type="number"
+              min="1350"
+              max="1600"
+              value={formData.sat_score}
+              onChange={(e) => handleInputChange('sat_score', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-md ${
+                errors.sat_score ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="例如: 1450"
+            />
+            {errors.sat_score && (
+              <p className="mt-1 text-sm text-red-600">{errors.sat_score}</p>
+            )}
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            GPA范围
-          </label>
-          <select
-            value={formData.gpa_range}
-            onChange={(e) => handleInputChange('gpa_range', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.gpa_range ? 'border-red-500' : 'border-gray-300'
-            }`}
-          >
-            <option value="">请选择GPA范围</option>
-            <option value="3.9+">3.9+</option>
-            <option value="3.8+">3.8+</option>
-            <option value="3.6+">3.6+</option>
-            <option value="3.6-">3.6-</option>
-          </select>
-          {errors.gpa_range && (
-            <p className="mt-1 text-sm text-red-600">{errors.gpa_range}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            SAT分数 (可选，最低1350)
-          </label>
-          <input
-            type="number"
-            min="1350"
-            max="1600"
-            value={formData.sat_score}
-            onChange={(e) => handleInputChange('sat_score', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.sat_score ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="例如: 1450"
-          />
-          {errors.sat_score && (
-            <p className="mt-1 text-sm text-red-600">{errors.sat_score}</p>
-          )}
-        </div>
-
-        {/* 美国评估不显示目标国家选择框，因为必定是美国 */}
-        {/* 其他国家的评估通过URL参数指定，也不显示选择框 */}
-      </div>
-
-              <div>
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             活动经历 (可多选，最少选择2个)
           </label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {['学术竞赛', '科研', '学生会', '社团活动', '志愿服务', '实习经历', '职业规划', '创业经历', '推荐信准备', '社区服务'].map((activity) => (
-              <label key={activity} className="flex items-center space-x-2">
+              <label key={activity} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
                 <input
                   type="checkbox"
                   checked={formData.activities.includes(activity)}
@@ -459,119 +461,133 @@ const ParentEvalStart = () => {
             <p className="mt-1 text-sm text-red-600">{errors.activities}</p>
           )}
         </div>
+      </div>
     </div>
   );
 
   const renderStep2 = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">兴趣偏好</h2>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          兴趣方向 (可多选，最少选择3个)
-        </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {['计算机科学', '公共政策', '经济学', '社会科学', '工程学', '物理学', '化学', '商科', '心理学', '艺术设计', '生物学', '创业', '人文社科', '医药学', '国际关系', '政治学', '农学', '自然科学', '教育学', '法学'].map((field) => (
-            <label key={field} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.interest_fields.includes(field)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    handleInputChange('interest_fields', [...formData.interest_fields, field]);
-                  } else {
-                    handleInputChange('interest_fields', formData.interest_fields.filter(f => f !== field));
-                  }
-                }}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">{field}</span>
-            </label>
-          ))}
-                  </div>
+      {/* B. 兴趣偏好 */}
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">B</span>
+          兴趣偏好
+        </h3>
+        
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            兴趣方向 (可多选，最少选择3个)
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-2 border border-gray-200 rounded-md">
+            {['计算机科学', '公共政策', '经济学', '社会科学', '工程学', '物理学', '化学', '商科', '心理学', '艺术设计', '生物学', '创业', '人文社科', '医药学', '国际关系', '政治学', '农学', '自然科学', '教育学', '法学'].map((field) => (
+              <label key={field} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input
+                  type="checkbox"
+                  checked={formData.interest_fields.includes(field)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      handleInputChange('interest_fields', [...formData.interest_fields, field]);
+                    } else {
+                      handleInputChange('interest_fields', formData.interest_fields.filter(f => f !== field));
+                    }
+                  }}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">{field}</span>
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-2">已选择 {formData.interest_fields.length} 个兴趣方向</p>
           {errors.interest_fields && (
             <p className="mt-1 text-sm text-red-600">{errors.interest_fields}</p>
           )}
         </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          学校类型偏好
-        </label>
-        <select
-          value={formData.school_type_preference}
-          onChange={(e) => handleInputChange('school_type_preference', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">请选择学校类型</option>
-          <option value="小型私立">小型私立</option>
-          <option value="中型私立">中型私立</option>
-          <option value="大型私立">大型私立</option>
-          <option value="公立大学">公立大学</option>
-        </select>
-      </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            学校类型偏好
+          </label>
+          <select
+            value={formData.school_type_preference}
+            onChange={(e) => handleInputChange('school_type_preference', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          >
+            <option value="">请选择学校类型</option>
+            <option value="小型私立">小型私立</option>
+            <option value="中型私立">中型私立</option>
+            <option value="大型私立">大型私立</option>
+            <option value="公立大学">公立大学</option>
+          </select>
+        </div>
 
-      <div>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={formData.reputation_important}
-            onChange={(e) => handleInputChange('reputation_important', e.target.checked)}
-            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-          <span className="text-sm text-gray-700">重视学校声誉和排名</span>
-        </label>
+        <div>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={formData.reputation_important}
+              onChange={(e) => handleInputChange('reputation_important', e.target.checked)}
+              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700">重视学校声誉和排名</span>
+          </label>
+        </div>
       </div>
     </div>
   );
 
   const renderStep3 = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">家庭取向</h2>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          家长期望
-        </label>
-        <select
-          value={formData.family_expectation}
-          onChange={(e) => handleInputChange('family_expectation', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">请选择期望</option>
-          <option value="就业导向">希望孩子有明确的职业规划</option>
-          <option value="探索导向">希望孩子能探索不同领域</option>
-          <option value="学术导向">希望孩子专注学术研究</option>
-        </select>
-      </div>
+      {/* C. 家庭取向 */}
+      <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-6 border border-purple-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">C</span>
+          家庭取向
+        </h3>
+        
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            家长期望
+          </label>
+          <select
+            value={formData.family_expectation}
+            onChange={(e) => handleInputChange('family_expectation', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          >
+            <option value="">请选择期望</option>
+            <option value="就业导向">希望孩子有明确的职业规划</option>
+            <option value="探索导向">希望孩子能探索不同领域</option>
+            <option value="学术导向">希望孩子专注学术研究</option>
+          </select>
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          预算范围 (年)
-        </label>
-        <select
-          value={formData.budget}
-          onChange={(e) => handleInputChange('budget', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">请选择预算</option>
-          <option value="35万-40万">35万-40万</option>
-          <option value="40万-50万">40万-50万</option>
-          <option value="50万-60万">50万-60万</option>
-          <option value="60万+">60万+</option>
-        </select>
-      </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            预算范围 (年)
+          </label>
+          <select
+            value={formData.budget}
+            onChange={(e) => handleInputChange('budget', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          >
+            <option value="">请选择预算</option>
+            <option value="35万-40万">35万-40万</option>
+            <option value="40万-50万">40万-50万</option>
+            <option value="50万-60万">50万-60万</option>
+            <option value="60万+">60万+</option>
+          </select>
+        </div>
 
-      <div>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={formData.internship_important}
-            onChange={(e) => handleInputChange('internship_important', e.target.checked)}
-            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-          <span className="text-sm text-gray-700">重视实习机会和就业前景</span>
-        </label>
+        <div>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={formData.internship_important}
+              onChange={(e) => handleInputChange('internship_important', e.target.checked)}
+              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700">重视实习机会和就业前景</span>
+          </label>
+        </div>
       </div>
     </div>
   );
@@ -642,16 +658,28 @@ const ParentEvalStart = () => {
         </div>
       );
     }
-    switch (currentStep) {
-      case 1:
-        return renderStep1();
-      case 2:
-        return renderStep2();
-      case 3:
-        return renderStep3();
-      default:
-        return renderStep1();
-    }
+    // 美国版：单页表单，合并所有步骤
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">美国家长评估</h2>
+        {renderStep1()}
+        {renderStep2()}
+        {renderStep3()}
+        {Object.keys(errors).length > 0 && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-800 font-medium mb-2">请完成以下必填项：</p>
+            <ul className="list-disc list-inside text-red-700 text-sm space-y-1">
+              {Object.values(errors).map((error, idx) => (
+                <li key={idx}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div className="flex justify-end">
+          <button onClick={submitEvaluation} disabled={loading} className={`px-6 py-2 rounded-md font-medium ${loading ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>提交评估</button>
+        </div>
+      </div>
+    );
   };
 
   // 获取当前国家名称用于显示
@@ -697,65 +725,11 @@ const ParentEvalStart = () => {
           </p>
         </div>
 
-        {/* Progress Bar - 只在多步骤表单显示 */}
-        {!searchParams?.get('country') || searchParams?.get('country') === 'USA' ? (
-          <div className="mb-8 bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">步骤 {currentStep} / 3</span>
-              <span className="text-sm text-gray-500">完成度 {Math.round((currentStep / 3) * 100)}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="bg-gradient-to-r from-blue-600 to-purple-600 h-3 rounded-full transition-all duration-300 shadow-sm"
-                style={{ width: `${(currentStep / 3) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-        ) : null}
 
         {/* Form Card */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
           <div className="p-8">
             {renderCurrentStep()}
-
-            {/* Navigation - 只在多步骤表单显示 */}
-            {(!searchParams?.get('country') || searchParams?.get('country') === 'USA') && (
-              <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
-                <button
-                  onClick={handleBack}
-                  disabled={currentStep === 1}
-                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                    currentStep === 1
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  <ArrowLeft className="h-4 w-4 inline mr-2" />
-                  上一步
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={loading}
-                  className={`px-8 py-3 rounded-lg font-medium flex items-center space-x-2 transition-all transform hover:scale-105 ${
-                    loading
-                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl'
-                  }`}
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>生成中...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>{currentStep === 3 ? '生成评估报告' : '下一步'}</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
           </div>
         </div>
 

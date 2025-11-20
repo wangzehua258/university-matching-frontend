@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { evaluationAPI } from '@/lib/api';
-import { GraduationCap, Award, Globe, MapPin, DollarSign } from 'lucide-react';
+import { GraduationCap, Award, Globe, MapPin, DollarSign, ArrowLeft } from 'lucide-react';
 import { AUResultView } from './AUResultView';
 import { UKResultView } from './UKResultView';
 import { SGResultView } from './SGResultView';
@@ -91,7 +92,7 @@ interface EvaluationResult {
   created_at: string;
 }
 
-const ParentEvalResultInner = () => {
+function ParentEvalResultInner() {
   const searchParams = useSearchParams();
   const evalId = searchParams.get('id');
   const [result, setResult] = useState<EvaluationResult | null>(null);
@@ -175,11 +176,55 @@ const ParentEvalResultInner = () => {
   // 其他国家（USA）使用原有视图
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/"
+                className="flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-1 rotate-180" />
+                <span>返回首页</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center">
+                <GraduationCap className="h-8 w-8 text-blue-600" />
+                <h1 className="ml-2 text-xl font-bold text-gray-900">个性化择校报告</h1>
+              </div>
+            </div>
+            <button
+              onClick={() => window.location.href = '/parent-eval/start'}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+            >
+              重新测评
+            </button>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">个性化择校报告</h1>
-          <p className="text-gray-600">基于您的评估结果生成的专属建议</p>
+          <p className="text-gray-600 mb-4">基于您的评估结果生成的专属建议</p>
+          {/* 免费申请资料 CTA - 明显位置 */}
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-lg shadow-lg p-4 text-white max-w-2xl mx-auto">
+            <div className="flex items-center justify-between">
+              <div className="flex-1 text-left">
+                <p className="font-bold text-lg mb-1">🎁 免费申请资料等你来拿！</p>
+                <p className="text-orange-100 text-sm">填写表格即可获得：详细申请时间表、材料准备清单、奖学金申请指导等完整申请资料包</p>
+              </div>
+              <a 
+                href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ml-4 px-6 py-3 bg-white text-orange-600 rounded-lg hover:bg-gray-50 transition-colors font-bold whitespace-nowrap shadow-md"
+              >
+                立即获取免费申请资料
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -375,9 +420,9 @@ const SchoolCard = ({ school }: { school: School }) => {
       )}
     </div>
   );
-};
+}
 
-const ParentEvalResult = () => {
+function ParentEvalResult() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -390,6 +435,6 @@ const ParentEvalResult = () => {
       <ParentEvalResultInner />
     </Suspense>
   );
-};
+}
 
 export default ParentEvalResult; 

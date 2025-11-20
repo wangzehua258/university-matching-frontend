@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { MapPin, DollarSign, GraduationCap, Briefcase, Clock, FileText, AlertCircle, BookOpen, Globe, Lightbulb } from 'lucide-react';
+import Link from 'next/link';
+import { MapPin, DollarSign, GraduationCap, Briefcase, Clock, FileText, AlertCircle, BookOpen, Lightbulb, ArrowLeft } from 'lucide-react';
 
 interface UKSchool {
   id: string;
@@ -46,11 +47,38 @@ interface UKResultData {
 export function UKResultView({ result }: { result: UKResultData }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/"
+                className="flex items-center text-purple-600 hover:text-purple-700 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-1 rotate-180" />
+                <span>返回首页</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center">
+                <GraduationCap className="h-8 w-8 text-purple-600" />
+                <h1 className="ml-2 text-xl font-bold text-gray-900">英国大学推荐报告</h1>
+              </div>
+            </div>
+            <button
+              onClick={() => window.location.href = '/parent-eval/start?country=United+Kingdom'}
+              className="bg-purple-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors"
+            >
+              重新测评
+            </button>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">英国大学推荐报告</h1>
-          <p className="text-gray-600">基于您的评估结果生成的专属推荐</p>
+          <p className="text-gray-600 mb-4">基于您的评估结果生成的专属推荐</p>
         </div>
 
         {/* 回退信息提示（如果有） */}
@@ -171,6 +199,24 @@ export function UKResultView({ result }: { result: UKResultData }) {
 
           {/* 右侧：推荐学校列表 */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Typeform CTA - 推荐学校之前 */}
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg p-5 text-white mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="font-semibold text-lg mb-1">填写表格取得联系，获得更详细的免费申请资料</p>
+                  <p className="text-purple-100 text-sm">包括：UCAS申请时间表、Personal Statement写作指导、入学测试准备建议、一对一专业顾问30分钟免费诊断等</p>
+                </div>
+                <a 
+                  href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-4 px-6 py-3 bg-white text-purple-600 rounded-lg hover:bg-gray-50 transition-colors font-semibold whitespace-nowrap"
+                >
+                  填写表格获取免费申请资料
+                </a>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-gray-900">推荐学校 ({result.recommendedSchools.length} 所)</h2>
             </div>

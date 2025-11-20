@@ -307,9 +307,26 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               如何使用
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
               简单三步，获得专业的留学规划建议
             </p>
+            {/* 免费申请资料 CTA - 明显位置 */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-lg p-5 text-white max-w-3xl mx-auto">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 text-left">
+                  <p className="font-bold text-xl mb-2 text-white">🎁 免费申请资料等你来拿！</p>
+                  <p className="text-blue-50 text-sm leading-relaxed">填写表格即可获得：详细申请时间表、材料准备清单、奖学金申请指导等完整申请资料包</p>
+                </div>
+                <a 
+                  href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-4 px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-50 transition-colors font-bold whitespace-nowrap shadow-lg"
+                >
+                  立即获取免费申请资料
+                </a>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -342,17 +359,6 @@ export default function HomePage() {
                 查看详细的推荐学校列表、申请指导和建议，开始您的留学规划
               </p>
             </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <a 
-              href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-block px-8 py-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg"
-            >
-              立即填写详细评估表格，获得专属留学方案
-            </a>
           </div>
         </div>
       </section>
@@ -436,19 +442,19 @@ export default function HomePage() {
               </p>
               
               {/* 评估特色 */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-700 flex items-center">
-                  <Award className="h-3 w-3 mr-1 text-green-600" />
-                  个性化推荐
-                </span>
-                <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-700 flex items-center">
-                  <Star className="h-3 w-3 mr-1 text-green-600" />
-                  智能匹配
-                </span>
-                <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-700 flex items-center">
-                  <Globe className="h-3 w-3 mr-1 text-green-600" />
-                  四国支持
-                </span>
+              <div className="grid grid-cols-1 gap-3 mb-4">
+                <div className="flex items-center space-x-2 p-2 bg-white rounded-lg hover:bg-green-50 transition-colors group">
+                  <Award className="h-4 w-4 text-green-600 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm font-medium text-gray-700">个性化推荐</span>
+                </div>
+                <div className="flex items-center space-x-2 p-2 bg-white rounded-lg hover:bg-green-50 transition-colors group">
+                  <Star className="h-4 w-4 text-green-600 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm font-medium text-gray-700">智能匹配</span>
+                </div>
+                <div className="flex items-center space-x-2 p-2 bg-white rounded-lg hover:bg-green-50 transition-colors group">
+                  <Globe className="h-4 w-4 text-green-600 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm font-medium text-gray-700">四国支持</span>
+                </div>
               </div>
               
               <Link

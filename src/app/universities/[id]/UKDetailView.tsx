@@ -124,19 +124,37 @@ export default function UKDetailView({ university, onBack }: UKDetailViewProps) 
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Typeform CTA Banner - 页面靠上位置 */}
+        <div className="mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg p-4 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-semibold text-lg mb-1">想获得针对这所学校的详细申请指导？</p>
+              <p className="text-purple-100 text-sm">填写表格获取具体的规划建议，包括UCAS申请时间表、Personal Statement指导等</p>
+            </div>
+            <a 
+              href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="ml-4 px-6 py-3 bg-white text-purple-600 rounded-lg hover:bg-gray-50 transition-colors font-semibold whitespace-nowrap"
+            >
+              填写表格获取具体规划建议
+            </a>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 左侧：主要信息 */}
           <div className="lg:col-span-2 space-y-6">
             {/* 学校基本信息 */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex-1">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-3">{university.name}</h2>
+              <div className="flex items-start justify-between mb-6 h-[140px]">
+                <div className="flex-1 pr-4">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-3 line-clamp-2 leading-tight">{university.name}</h2>
                   <div className="flex items-center text-gray-600 mb-2">
-                    <MapPin className="h-5 w-5 mr-2 text-blue-600" />
+                    <MapPin className="h-5 w-5 mr-2 text-blue-600 flex-shrink-0" />
                     <span className="text-lg">{university.city}, {university.country}</span>
                   </div>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="min-h-[28px] flex flex-wrap gap-2">
                     {university.russell_group && (
                       <div className="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
                         <Award className="h-4 w-4 mr-1" />
@@ -157,7 +175,7 @@ export default function UKDetailView({ university, onBack }: UKDetailViewProps) 
                     )}
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 bg-yellow-100 px-4 py-3 rounded-lg">
+                <div className="flex items-center space-x-2 bg-yellow-100 px-4 py-3 rounded-lg flex-shrink-0">
                   <Star className="h-6 w-6 text-yellow-500" />
                   <div>
                     <div className="text-xs text-yellow-700">世界排名</div>

@@ -6,14 +6,12 @@ import {
   Star, 
   DollarSign, 
   Calendar,
-  GraduationCap,
   Briefcase,
   Award,
   Globe,
   FileText,
   Clock,
   CheckCircle2,
-  XCircle,
   Info,
   Users,
   Target,
@@ -141,16 +139,34 @@ export default function USDetailView({ university, onBack }: USDetailViewProps) 
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Typeform CTA Banner - 页面靠上位置 */}
+        <div className="mb-6 bg-gradient-to-r from-red-600 to-pink-600 rounded-lg shadow-lg p-4 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-semibold text-lg mb-1">想获得针对这所学校的详细申请指导？</p>
+              <p className="text-red-100 text-sm">填写表格获取具体的规划建议，包括ED/EA/RD申请策略、材料准备清单等</p>
+            </div>
+            <a 
+              href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="ml-4 px-6 py-3 bg-white text-red-600 rounded-lg hover:bg-gray-50 transition-colors font-semibold whitespace-nowrap"
+            >
+              填写表格获取具体规划建议
+            </a>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 左侧：主要信息 */}
           <div className="lg:col-span-2 space-y-6">
             {/* 基本信息 */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">{university.name}</h2>
+              <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200 h-[140px]">
+                <div className="flex-1 pr-4">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight">{university.name}</h2>
                   <div className="flex items-center text-gray-600 mb-2">
-                    <MapPin className="h-4 w-4 mr-2" />
+                    <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span>{university.state}, 美国</span>
                   </div>
                   <div className="flex items-center space-x-4 text-sm text-gray-600">
@@ -166,7 +182,7 @@ export default function USDetailView({ university, onBack }: USDetailViewProps) 
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col items-center bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-200">
+                <div className="flex flex-col items-center bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-200 flex-shrink-0">
                   <Star className="h-5 w-5 text-yellow-500 fill-current mb-1" />
                   <span className="text-xl font-bold text-gray-900">#{university.rank}</span>
                   <span className="text-xs text-gray-600 mt-1">排名</span>
