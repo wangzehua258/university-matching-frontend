@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { evaluationAPI } from '@/lib/api';
-import { GraduationCap, Award, Globe, MapPin, DollarSign, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Award, Globe, MapPin, DollarSign, ArrowLeft, Lightbulb } from 'lucide-react';
 import { AUResultView } from './AUResultView';
 import { UKResultView } from './UKResultView';
 import { SGResultView } from './SGResultView';
@@ -263,15 +263,31 @@ function ParentEvalResultInner() {
               </p>
             </div>
 
-            {/* GPT总结 */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            {/* 专业建议 - 放在显眼位置 */}
+            <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg shadow-lg p-6 border border-purple-200">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <Globe className="w-5 h-5 mr-2 text-purple-600" />
+                <Lightbulb className="w-5 h-5 mr-2 text-purple-600" />
                 专业建议
               </h2>
-              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-                {result.gptSummary || ''}
-              </p>
+              {result.gptSummary ? (
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
+                    {result.gptSummary}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm italic">专业建议生成中...</p>
+              )}
+              <div className="mt-4 pt-4 border-t border-purple-200">
+                <a 
+                  href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-full px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium text-sm"
+                >
+                  立即填写详细评估表格，获得专属留学方案
+                </a>
+              </div>
             </div>
           </div>
 
