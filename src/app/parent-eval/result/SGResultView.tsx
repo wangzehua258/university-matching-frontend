@@ -127,6 +127,16 @@ export function SGResultView({ result }: { result: SGResultData }) {
               ) : (
                 <p className="text-gray-500 text-sm italic">专业建议生成中...</p>
               )}
+              <div className="mt-4 pt-4 border-t border-green-200">
+                <a 
+                  href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm"
+                >
+                  立即填写详细评估表格，获得专属留学方案
+                </a>
+              </div>
             </div>
 
             {/* 申请流程指导 */}

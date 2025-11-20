@@ -343,6 +343,17 @@ export default function HomePage() {
               </p>
             </div>
           </div>
+
+          <div className="text-center mt-12">
+            <a 
+              href="https://bjcn4oqknuy.typeform.com/to/XZPDqGoN" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg"
+            >
+              立即填写详细评估表格，获得专属留学方案
+            </a>
+          </div>
         </div>
       </section>
 
